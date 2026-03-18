@@ -3,6 +3,7 @@ from django.contrib.auth import logout, login
 from .models import CustomUser, Staffs, Students, AdminHOD
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
+from django.db import DatabaseError
 
 def home(request):
     return render(request, 'home.html')
@@ -21,7 +22,11 @@ def doLogin(request):
         messages.error(request, "Please provide all the details!!")
         return render(request, 'login_page.html')
 
-    user = CustomUser.objects.filter(email=email_id).last()
+    try:
+        user = CustomUser.objects.filter(email=email_id).last()
+    except DatabaseError:
+        messages.error(request, 'Login is temporarily unavailable due to a database issue. Please try again later.')
+        return render(request, 'login_page.html')
 
     if not user or not check_password(password, user.password):
         messages.error(request, 'Invalid Login Credentials!!')
@@ -56,8 +61,12 @@ def doRegistration(request):
         messages.error(request, 'Both passwords should match!!')
         return render(request, 'registration.html')
 
-    if CustomUser.objects.filter(email=email_id).exists():
-        messages.error(request, 'User with this email already exists. Please login.')
+    try:
+        if CustomUser.objects.filter(email=email_id).exists():
+            messages.error(request, 'User with this email already exists. Please login.')
+            return render(request, 'registration.html')
+    except DatabaseError:
+        messages.error(request, 'Registration is temporarily unavailable due to a database issue. Please try again later.')
         return render(request, 'registration.html')
 
     user_type = get_user_type_from_email(email_id)
@@ -68,8 +77,12 @@ def doRegistration(request):
 
     username = email_id.split('@')[0].split('.')[0]
 
-    if CustomUser.objects.filter(username=username).exists():
-        messages.error(request, 'User with this username already exists. Please choose a different email.')
+    try:
+        if CustomUser.objects.filter(username=username).exists():
+            messages.error(request, 'User with this username already exists. Please choose a different email.')
+            return render(request, 'registration.html')
+    except DatabaseError:
+        messages.error(request, 'Registration is temporarily unavailable due to a database issue. Please try again later.')
         return render(request, 'registration.html')
 
     user = CustomUser()
@@ -79,14 +92,22 @@ def doRegistration(request):
     user.last_name = last_name
     user.user_type = user_type
     user.set_password(password) 
-    user.save()
+    try:
+        user.save()
+    except DatabaseError:
+        messages.error(request, 'Registration is temporarily unavailable due to a database issue. Please try again later.')
+        return render(request, 'registration.html')
 
-    if user_type == CustomUser.STAFF:
-        Staffs.objects.create(admin=user)
-    elif user_type == CustomUser.STUDENT:
-        Students.objects.create(admin=user)
-    elif user_type == CustomUser.HOD:
-        AdminHOD.objects.create(admin=user)
+    try:
+        if user_type == CustomUser.STAFF:
+            Staffs.objects.create(admin=user)
+        elif user_type == CustomUser.STUDENT:
+            Students.objects.create(admin=user)
+        elif user_type == CustomUser.HOD:
+            AdminHOD.objects.create(admin=user)
+    except DatabaseError:
+        messages.error(request, 'Registration is temporarily unavailable due to a database issue. Please try again later.')
+        return render(request, 'registration.html')
 
     messages.success(request, "Registration successful. Please log in.")
     return render(request, 'login_page.html')
