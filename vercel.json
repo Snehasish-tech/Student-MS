@@ -2,16 +2,7 @@
   "version": 2,
   "installCommand": "pip install -r requirements.txt",
   "buildCommand": "bash build_files.sh",
-  "builds": [
-    {
-      "src": "student_management_project/wsgi.py",
-      "use": "@vercel/python"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "student_management_project/wsgi.py"
-    }
-  ]
+  "env": {
+    "PYTHONUNBUFFERED": "1"
+  }
 }
