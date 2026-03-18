@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>Manage Staff</h3>
+    <a href="{% url 'add_staff' %}" class="btn btn-primary">Add New Staff</a>
+  </div>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="card p-3">
+    <div class="table-responsive">
+      <table class="table table-bordered table-sm">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Username</th>
+            <th>Address</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for staff in staffs %}
+          <tr>
+            <td>{{ staff.admin.first_name }} {{ staff.admin.last_name }}</td>
+            <td>{{ staff.admin.email }}</td>
+            <td>{{ staff.admin.username }}</td>
+            <td>{{ staff.address }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4">No staff found.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock content %}

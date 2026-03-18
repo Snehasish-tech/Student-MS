@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+  <h3>Add / Update Result</h3>
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="card p-3 mb-3">
+    <div class="row">
+      <div class="col-md-6 mb-2">
+        <label>Subject</label>
+        <select id="subject_selector" class="form-control">
+          <option value="">Select Subject</option>
+          {% for subject in subjects %}
+            <option value="{{ subject.id }}">{{ subject.subject_name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-6 mb-2">
+        <label>Session Year</label>
+        <select id="session_year_selector" class="form-control">
+          <option value="">Select Session</option>
+          {% for year in session_years %}
+            <option value="{{ year.id }}">{{ year.session_start_year }} - {{ year.session_end_year }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <button id="fetch_students_for_result" class="btn btn-secondary">Fetch Students</button>
+  </div>
+
+  <form method="POST" action="{% url 'staff_add_result_save' %}" class="card p-3">
+    {% csrf_token %}
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label>Student</label>
+        <select name="student_list" id="student_list" class="form-control" required>
+          <option value="">Select Student</option>
+        </select>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label>Subject</label>
+        <select name="subject" id="subject_hidden_target" class="form-control" required>
+          <option value="">Select Subject</option>
+          {% for subject in subjects %}
+            <option value="{{ subject.id }}">{{ subject.subject_name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label>Assignment Marks</label>
+        <input type="number" step="0.01" name="assignment_marks" class="form-control" required>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label>Exam Marks</label>
+        <input type="number" step="0.01" name="exam_marks" class="form-control" required>
+      </div>
+    </div>
+
+    <div>
+      <button type="submit" class="btn btn-primary">Save Result</button>
+      <a href="{% url 'staff_home' %}" class="btn btn-secondary">Back</a>
+    </div>
+  </form>
+</div>
+
+<script>
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
+function normalizeData(payload) {
+  if (typeof payload === 'string') {
+    try { return JSON.parse(payload); } catch (e) { return []; }
+  }
+  return payload;
+}
+
+document.getElementById('fetch_students_for_result').addEventListener('click', function() {
+  const subject = document.getElementById('subject_selector').value;
+  const sessionYear = document.getElementById('session_year_selector').value;
+  if (!subject || !sessionYear) {
+    alert('Select subject and session first.');
+    return;
+  }
+
+  document.getElementById('subject_hidden_target').value = subject;
+
+  const formData = new FormData();
+  formData.append('subject', subject);
+  formData.append('session_year', sessionYear);
+
+  fetch("{% url 'get_students' %}", {
+    method: 'POST',
+    headers: { 'X-CSRFToken': getCookie('csrftoken') },
+    body: formData
+  })
+  .then((response) => response.json())
+  .then((data) => {
+    const students = normalizeData(data);
+    const list = document.getElementById('student_list');
+    list.innerHTML = '<option value="">Select Student</option>';
+    students.forEach((student) => {
+      const opt = document.createElement('option');
+      opt.value = student.id;
+      opt.textContent = student.name;
+      list.appendChild(opt);
+    });
+  });
+});
+</script>
+{% endblock content %}

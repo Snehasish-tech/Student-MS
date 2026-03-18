@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+  .student-page {
+    background: #f5f7fa;
+    min-height: 100vh;
+    padding: 28px 0 40px;
+  }
+
+  .top-nav {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin-bottom: 20px;
+  }
+
+  .top-nav a {
+    color: #0f172a;
+    text-decoration: none;
+    font-weight: 600;
+    margin-right: 16px;
+  }
+
+  .top-nav a:hover {
+    color: #0284c7;
+  }
+
+  .card-box {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 24px;
+  }
+
+  .page-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 16px;
+  }
+</style>
+
+<div class="student-page">
+  <div class="container">
+    <div class="top-nav">
+      <a href="{% url 'student_home' %}">Dashboard</a>
+      <a href="{% url 'student_profile' %}">Profile</a>
+      <a href="{% url 'student_view_attendance' %}">Attendance</a>
+      <a href="{% url 'student_view_result' %}">Results</a>
+      <a href="{% url 'logout_user' %}">Logout</a>
+    </div>
+
+    <div class="card-box">
+      <h3 class="page-title">My Results</h3>
+
+      {% if student_result %}
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>Subject</th>
+              <th>Exam Marks</th>
+              <th>Assignment Marks</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for result in student_result %}
+            <tr>
+              <td>{{ result.subject_id.subject_name }}</td>
+              <td>{{ result.subject_exam_marks }}</td>
+              <td>{{ result.subject_assignment_marks }}</td>
+              <td>{{ result.subject_exam_marks|add:result.subject_assignment_marks }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="alert alert-info" role="alert">
+        No result data available yet.
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock content %}

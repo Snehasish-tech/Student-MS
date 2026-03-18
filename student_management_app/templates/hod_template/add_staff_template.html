@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+  <h3>Add Staff</h3>
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="POST" action="{% url 'add_staff_save' %}" class="card p-3">
+    {% csrf_token %}
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label>First Name</label>
+        <input type="text" name="first_name" class="form-control" required>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label>Last Name</label>
+        <input type="text" name="last_name" class="form-control" required>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label>Username</label>
+        <input type="text" name="username" class="form-control" required>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label>Email</label>
+        <input type="email" name="email" class="form-control" required>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label>Password</label>
+        <input type="password" name="password" class="form-control" required>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label>Address</label>
+        <input type="text" name="address" class="form-control" required>
+      </div>
+    </div>
+    <div>
+      <button type="submit" class="btn btn-primary">Add Staff</button>
+      <a href="{% url 'admin_home' %}" class="btn btn-secondary">Back</a>
+    </div>
+  </form>
+</div>
+{% endblock content %}

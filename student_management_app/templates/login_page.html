@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+<style>
+   :root {
+      --bg: #eef3f7;
+      --ink: #102329;
+      --muted: #59717a;
+      --line: #cfdee4;
+      --primary: #0f7a7d;
+      --surface: rgba(255, 255, 255, 0.85);
+   }
+
+   body {
+      font-family: 'Manrope', 'Segoe UI', sans-serif;
+      background:
+         radial-gradient(circle at 10% 8%, rgba(15, 122, 125, 0.18), transparent 34%),
+         radial-gradient(circle at 93% 18%, rgba(255, 138, 61, 0.22), transparent 28%),
+         var(--bg);
+      color: var(--ink);
+   }
+
+   .auth-nav {
+      background: rgba(255, 255, 255, 0.82);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(8px);
+   }
+
+   .auth-brand {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      color: var(--ink) !important;
+   }
+
+   .auth-wrap {
+      min-height: calc(100vh - 70px);
+      display: grid;
+      place-items: center;
+      padding: 32px 16px 40px;
+   }
+
+   .auth-card {
+      width: 100%;
+      max-width: 470px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: 0 18px 45px rgba(16, 35, 41, 0.14);
+      padding: 30px;
+   }
+
+   .auth-title {
+      font-family: 'Space Grotesk', sans-serif;
+      margin-bottom: 6px;
+   }
+
+   .auth-subtitle {
+      color: var(--muted);
+      margin-bottom: 22px;
+   }
+
+   .form-control {
+      border: 1px solid #c8d8de;
+      border-radius: 12px;
+      padding: 10px 12px;
+      height: 46px;
+   }
+
+   .form-control:focus {
+      border-color: #83b9c2;
+      box-shadow: 0 0 0 0.2rem rgba(15, 122, 125, 0.14);
+   }
+
+   .btn-auth {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(140deg, var(--primary), #0b686b);
+      color: #fff;
+      font-weight: 700;
+      padding: 11px;
+      box-shadow: 0 10px 24px rgba(15, 122, 125, 0.24);
+   }
+
+   .btn-auth:hover {
+      color: #fff;
+   }
+
+   .helper-links {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 12px;
+      gap: 10px;
+      flex-wrap: wrap;
+   }
+
+   .helper-links a {
+      color: #28545f;
+      font-size: 0.92rem;
+      text-decoration: none;
+   }
+
+   .helper-links a:hover {
+      text-decoration: underline;
+   }
+</style>
+
+<nav class="navbar navbar-expand-lg auth-nav">
+   <div class="container">
+      <a class="navbar-brand auth-brand" href="/">StudentMS</a>
+      <div class="ml-auto">
+         <a href="{% url 'contact' %}" class="btn btn-outline-secondary btn-sm">Contact</a>
+      </div>
+   </div>
+</nav>
+
+<section class="auth-wrap">
+   <div class="auth-card">
+      <h2 class="auth-title">Welcome Back</h2>
+      <p class="auth-subtitle">Sign in to access your student management dashboard.</p>
+
+      {% if messages %}
+      <div class="mb-3">
+         {% for message in messages %}
+         <div class="alert alert-danger py-2 mb-2" role="alert">{{ message }}</div>
+         {% endfor %}
+      </div>
+      {% endif %}
+
+      <form action="{% url 'doLogin' %}" method="get">
+         {% csrf_token %}
+         <div class="form-group mb-3">
+            <label for="loginEmail" class="font-weight-bold">Email</label>
+            <input id="loginEmail" class="form-control" type="email" name="email" placeholder="Enter your email" required>
+         </div>
+         <div class="form-group mb-3">
+            <label for="loginPassword" class="font-weight-bold">Password</label>
+            <input id="loginPassword" class="form-control" type="password" name="password" placeholder="Enter your password" required>
+         </div>
+         <button class="btn btn-auth" type="submit">Login</button>
+      </form>
+
+      <div class="helper-links">
+         <a href="/registration">Create new account</a>
+         <a href="/">Back to home</a>
+      </div>
+   </div>
+</section>
+{% endblock content %}

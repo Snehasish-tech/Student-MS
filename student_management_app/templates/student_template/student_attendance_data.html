@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+  .student-page {
+    background: #f5f7fa;
+    min-height: 100vh;
+    padding: 28px 0 40px;
+  }
+
+  .top-nav {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin-bottom: 20px;
+  }
+
+  .top-nav a {
+    color: #0f172a;
+    text-decoration: none;
+    font-weight: 600;
+    margin-right: 16px;
+  }
+
+  .top-nav a:hover {
+    color: #0284c7;
+  }
+
+  .card-box {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 24px;
+  }
+
+  .page-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 16px;
+  }
+
+  .badge-present {
+    background: #16a34a;
+    color: #fff;
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 0.8rem;
+  }
+
+  .badge-absent {
+    background: #dc2626;
+    color: #fff;
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 0.8rem;
+  }
+</style>
+
+<div class="student-page">
+  <div class="container">
+    <div class="top-nav">
+      <a href="{% url 'student_home' %}">Dashboard</a>
+      <a href="{% url 'student_profile' %}">Profile</a>
+      <a href="{% url 'student_view_attendance' %}">Attendance</a>
+      <a href="{% url 'student_view_result' %}">Results</a>
+      <a href="{% url 'logout_user' %}">Logout</a>
+    </div>
+
+    <div class="card-box">
+      <h3 class="page-title">Attendance Records - {{ subject_obj.subject_name }}</h3>
+
+      {% if attendance_reports %}
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for attendance in attendance_reports %}
+            <tr>
+              <td>{{ attendance.attendance_id.attendance_date }}</td>
+              <td>
+                {% if attendance.status %}
+                  <span class="badge-present">Present</span>
+                {% else %}
+                  <span class="badge-absent">Absent</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="alert alert-info" role="alert">
+        No attendance records found for selected date range.
+      </div>
+      {% endif %}
+
+      <a href="{% url 'student_view_attendance' %}" class="btn btn-outline-primary">Back</a>
+    </div>
+  </div>
+</div>
+{% endblock content %}

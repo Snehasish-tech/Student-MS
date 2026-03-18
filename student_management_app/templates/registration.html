@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+<style>
+   :root {
+      --bg: #eef3f7;
+      --ink: #102329;
+      --muted: #59717a;
+      --line: #cfdee4;
+      --primary: #0f7a7d;
+      --surface: rgba(255, 255, 255, 0.88);
+   }
+
+   body {
+      font-family: 'Manrope', 'Segoe UI', sans-serif;
+      background:
+         radial-gradient(circle at 12% 10%, rgba(15, 122, 125, 0.16), transparent 34%),
+         radial-gradient(circle at 88% 22%, rgba(255, 138, 61, 0.22), transparent 28%),
+         var(--bg);
+      color: var(--ink);
+   }
+
+   .auth-nav {
+      background: rgba(255, 255, 255, 0.82);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(8px);
+   }
+
+   .auth-brand {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      color: var(--ink) !important;
+   }
+
+   .register-wrap {
+      min-height: calc(100vh - 70px);
+      display: grid;
+      place-items: center;
+      padding: 24px 16px 40px;
+   }
+
+   .register-card {
+      width: 100%;
+      max-width: 620px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: 0 20px 44px rgba(16, 35, 41, 0.14);
+      padding: 30px;
+   }
+
+   .register-title {
+      font-family: 'Space Grotesk', sans-serif;
+      margin-bottom: 8px;
+   }
+
+   .register-subtitle {
+      color: var(--muted);
+      margin-bottom: 20px;
+   }
+
+   .form-control {
+      border: 1px solid #c8d8de;
+      border-radius: 12px;
+      padding: 10px 12px;
+      height: 46px;
+   }
+
+   .form-control:focus {
+      border-color: #83b9c2;
+      box-shadow: 0 0 0 0.2rem rgba(15, 122, 125, 0.14);
+   }
+
+   .btn-register {
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(140deg, var(--primary), #0b686b);
+      color: #fff;
+      font-weight: 700;
+      width: 100%;
+      padding: 11px;
+      box-shadow: 0 10px 24px rgba(15, 122, 125, 0.24);
+   }
+
+   .btn-register:hover {
+      color: #fff;
+   }
+
+   .helper {
+      margin-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+   }
+
+   .helper a {
+      color: #28545f;
+      text-decoration: none;
+      font-size: 0.92rem;
+   }
+
+   .helper a:hover {
+      text-decoration: underline;
+   }
+</style>
+
+<nav class="navbar navbar-expand-lg auth-nav">
+   <div class="container">
+      <a class="navbar-brand auth-brand" href="/">StudentMS</a>
+      <div class="ml-auto d-flex" style="gap: 8px;">
+         <a href="/login" class="btn btn-outline-secondary btn-sm">Login</a>
+         <a href="/contact" class="btn btn-outline-secondary btn-sm">Contact</a>
+      </div>
+   </div>
+</nav>
+
+<section class="register-wrap">
+   <div class="register-card">
+      <h2 class="register-title">Create Your Account</h2>
+      <p class="register-subtitle">Register as student, staff, or HOD using your institutional email format.</p>
+
+      {% if messages %}
+      <div class="mb-3">
+         {% for message in messages %}
+         <div class="alert alert-danger py-2 mb-2" role="alert">{{ message }}</div>
+         {% endfor %}
+      </div>
+      {% endif %}
+
+      <form action="{% url 'doRegistration' %}" method="get">
+         {% csrf_token %}
+         <div class="row">
+            <div class="col-md-6">
+               <div class="form-group mb-3">
+                  <label for="firstName" class="font-weight-bold">First Name</label>
+                  <input id="firstName" class="form-control" type="text" name="first_name" placeholder="First name" required>
+               </div>
+            </div>
+            <div class="col-md-6">
+               <div class="form-group mb-3">
+                  <label for="lastName" class="font-weight-bold">Last Name</label>
+                  <input id="lastName" class="form-control" type="text" name="last_name" placeholder="Last name" required>
+               </div>
+            </div>
+         </div>
+
+         <div class="form-group mb-3">
+            <label for="email" class="font-weight-bold">Email</label>
+            <input id="email" class="form-control" type="email" name="email" placeholder="name.student@college.com" required>
+         </div>
+
+         <div class="row">
+            <div class="col-md-6">
+               <div class="form-group mb-3">
+                  <label for="password" class="font-weight-bold">Password</label>
+                  <input id="password" class="form-control" type="password" name="password" placeholder="Create password" required>
+               </div>
+            </div>
+            <div class="col-md-6">
+               <div class="form-group mb-3">
+                  <label for="confirmPassword" class="font-weight-bold">Confirm Password</label>
+                  <input id="confirmPassword" class="form-control" type="password" name="confirmPassword" placeholder="Confirm password" required>
+               </div>
+            </div>
+         </div>
+
+         <button class="btn btn-register" type="submit">Create Account</button>
+      </form>
+
+      <div class="helper">
+         <a href="/login">Already registered? Login</a>
+         <a href="/">Back to home</a>
+      </div>
+   </div>
+</section>
+{% endblock content %}

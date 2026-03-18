@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+  <h3>Send Feedback</h3>
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="POST" action="{% url 'staff_feedback_save' %}" class="card p-3 mb-4">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label>Feedback Message</label>
+      <textarea name="feedback_message" rows="4" class="form-control" required></textarea>
+    </div>
+    <div>
+      <button type="submit" class="btn btn-primary">Send</button>
+      <a href="{% url 'staff_home' %}" class="btn btn-secondary">Back</a>
+    </div>
+  </form>
+
+  <div class="card p-3">
+    <h5>Feedback History</h5>
+    <div class="table-responsive">
+      <table class="table table-bordered table-sm">
+        <thead>
+          <tr>
+            <th>Feedback</th>
+            <th>Reply</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in feedback_data %}
+          <tr>
+            <td>{{ item.feedback }}</td>
+            <td>{{ item.feedback_reply|default:'-' }}</td>
+            <td>{{ item.created_at }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="3">No feedback sent yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock content %}

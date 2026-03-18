@@ -1,0 +1,384 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #f5f7fa;
+    --surface: #ffffff;
+    --ink: #0f172a;
+    --muted: #64748b;
+    --primary: #0284c7;
+    --accent: #0369a1;
+    --stroke: #e2e8f0;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Manrope', sans-serif;
+  }
+
+  .dashboard-header {
+    background: linear-gradient(135deg, #0284c7, #0369a1);
+    color: #fff;
+    padding: 32px 0;
+    margin-bottom: 32px;
+  }
+
+  .dashboard-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .dashboard-subtitle {
+    opacity: 0.95;
+    font-size: 0.95rem;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--stroke);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+
+  .stat-card:hover {
+    border-color: #bae6fd;
+    box-shadow: 0 8px 16px rgba(2, 132, 199, 0.12);
+    transform: translateY(-4px);
+  }
+
+  .stat-icon {
+    font-size: 2rem;
+    margin-bottom: 12px;
+  }
+
+  .stat-value {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #0284c7;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .chart-container {
+    background: var(--surface);
+    border: 1px solid var(--stroke);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 32px;
+  }
+
+  .chart-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+
+  .charts-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 24px;
+  }
+
+  .action-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .btn-action {
+    background: linear-gradient(135deg, #0284c7, #0369a1);
+    color: #fff !important;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+
+  .btn-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(2, 132, 199, 0.2);
+    color: #fff !important;
+  }
+
+  .navbar-brand {
+    color: #0284c7 !important;
+    font-weight: 700;
+  }
+
+  .btn-logout {
+    background: linear-gradient(135deg, #0284c7, #0369a1);
+    color: #fff !important;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 600;
+  }
+
+  .btn-logout:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(2, 132, 199, 0.2);
+  }
+
+  .navbar-nav .nav-link {
+    color: var(--ink) !important;
+    font-weight: 500;
+    margin: 0 8px;
+    padding: 8px 12px !important;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+  }
+
+  .navbar-nav .nav-link:hover {
+    background: #e0f2fe;
+    color: #0284c7 !important;
+  }
+
+  @media (max-width: 1024px) {
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .charts-row {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .dashboard-title {
+      font-size: 1.5rem;
+    }
+  }
+</style>
+
+<nav class="navbar navbar-expand-lg navbar-light" style="background: rgba(255, 255, 255, 0.9); border-bottom: 1px solid var(--stroke);">
+  <div class="container">
+    <a class="navbar-brand" href="/">StudentMS</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#adminNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="adminNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item"><a class="nav-link" href="{% url 'manage_staff' %}">Manage Staff</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'add_staff' %}">Add Staff</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'logout_user' %}" class="btn btn-logout">Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="dashboard-header">
+  <div class="container">
+    <div class="dashboard-title">Welcome, {{ request.user.first_name|default:"Administrator" }}!</div>
+    <div class="dashboard-subtitle">Institution-wide analytics and management</div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="action-buttons">
+    <a href="{% url 'add_staff' %}" class="btn btn-action">👨‍💼 Add Staff</a>
+    <a href="{% url 'manage_staff' %}" class="btn btn-action">📋 Manage Staff</a>
+    <a href="/admin/" class="btn btn-action" target="_blank">⚙️ Admin Panel</a>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">👥</div>
+      <div class="stat-value">{{ all_student_count }}</div>
+      <div class="stat-label">Total Students</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">👨‍🏫</div>
+      <div class="stat-value">{{ staff_count }}</div>
+      <div class="stat-label">Total Staff</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">📚</div>
+      <div class="stat-value">{{ subject_count }}</div>
+      <div class="stat-label">Total Subjects</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🎓</div>
+      <div class="stat-value">{{ course_count }}</div>
+      <div class="stat-label">Total Courses</div>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-container">
+      <div class="chart-title">Students by Course</div>
+      <canvas id="courseChart" width="400" height="250"></canvas>
+    </div>
+
+    <div class="chart-container">
+      <div class="chart-title">Subjects by Course</div>
+      <canvas id="subjectChart" width="400" height="250"></canvas>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-container">
+      <div class="chart-title">Staff Attendance Overview</div>
+      <canvas id="staffAttendanceChart" width="400" height="250"></canvas>
+    </div>
+
+    <div class="chart-container">
+      <div class="chart-title">Staff Leave Status</div>
+      <canvas id="staffLeaveChart" width="400" height="250"></canvas>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+{{ course_name_list|json_script:"hod-course-name-list-data" }}
+{{ student_count_list_in_course|json_script:"hod-student-count-list-in-course-data" }}
+{{ subject_count_list|json_script:"hod-subject-count-list-data" }}
+{{ staff_name_list|json_script:"hod-staff-name-list-data" }}
+{{ staff_attendance_present_list|json_script:"hod-staff-attendance-present-list-data" }}
+{{ staff_attendance_leave_list|json_script:"hod-staff-attendance-leave-list-data" }}
+<script>
+  const courseNameListData = JSON.parse(document.getElementById('hod-course-name-list-data').textContent);
+  const studentCountListInCourseData = JSON.parse(document.getElementById('hod-student-count-list-in-course-data').textContent);
+  const subjectCountListData = JSON.parse(document.getElementById('hod-subject-count-list-data').textContent);
+  const staffNameListData = JSON.parse(document.getElementById('hod-staff-name-list-data').textContent);
+  const staffAttendancePresentListData = JSON.parse(document.getElementById('hod-staff-attendance-present-list-data').textContent);
+  const staffAttendanceLeaveListData = JSON.parse(document.getElementById('hod-staff-attendance-leave-list-data').textContent);
+
+  // Students by Course Chart
+  const ctx1 = document.getElementById('courseChart').getContext('2d');
+  const courseChart = new Chart(ctx1, {
+    type: 'doughnut',
+    data: {
+      labels: courseNameListData,
+      datasets: [{
+        label: 'Students',
+        data: studentCountListInCourseData,
+        backgroundColor: [
+          'rgba(2, 132, 199, 0.8)',
+          'rgba(3, 105, 161, 0.8)',
+          'rgba(59, 130, 246, 0.8)',
+          'rgba(34, 197, 94, 0.8)',
+        ],
+        borderRadius: 8,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        legend: { position: 'bottom' }
+      }
+    }
+  });
+
+  // Subjects by Course Chart
+  const ctx2 = document.getElementById('subjectChart').getContext('2d');
+  const subjectChart = new Chart(ctx2, {
+    type: 'doughnut',
+    data: {
+      labels: courseNameListData,
+      datasets: [{
+        label: 'Subjects',
+        data: subjectCountListData,
+        backgroundColor: [
+          'rgba(139, 92, 246, 0.8)',
+          'rgba(168, 85, 247, 0.8)',
+          'rgba(217, 70, 239, 0.8)',
+          'rgba(236, 72, 153, 0.8)',
+        ],
+        borderRadius: 8,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        legend: { position: 'bottom' }
+      }
+    }
+  });
+
+  // Staff Attendance Chart
+  const ctx3 = document.getElementById('staffAttendanceChart').getContext('2d');
+  const staffAttendanceChart = new Chart(ctx3, {
+    type: 'bar',
+    data: {
+      labels: staffNameListData,
+      datasets: [{
+        label: 'Classes Attended',
+        data: staffAttendancePresentListData,
+        backgroundColor: 'rgba(2, 132, 199, 0.8)',
+        borderRadius: 8,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        legend: { display: true }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+
+  // Staff Leave Chart
+  const ctx4 = document.getElementById('staffLeaveChart').getContext('2d');
+  const staffLeaveChart = new Chart(ctx4, {
+    type: 'bar',
+    data: {
+      labels: staffNameListData,
+      datasets: [{
+        label: 'Approved Leaves',
+        data: staffAttendanceLeaveListData,
+        backgroundColor: 'rgba(245, 158, 11, 0.8)',
+        borderRadius: 8,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        legend: { display: true }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+</script>
+
+{% endblock content %}

@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #eff4f6;
+    --ink: #102329;
+    --muted: #567179;
+    --line: #cfdee4;
+    --primary: #0f7a7d;
+    --surface: #ffffff;
+  }
+
+  body {
+    background:
+      radial-gradient(circle at 8% 10%, rgba(15, 122, 125, 0.16), transparent 32%),
+      radial-gradient(circle at 92% 20%, rgba(255, 138, 61, 0.2), transparent 30%),
+      var(--bg);
+    color: var(--ink);
+    font-family: 'Manrope', 'Segoe UI', sans-serif;
+  }
+
+  .contact-nav {
+    background: rgba(255, 255, 255, 0.84);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(8px);
+  }
+
+  .contact-hero {
+    position: relative;
+    border-radius: 18px;
+    overflow: hidden;
+    margin: 28px auto 24px;
+    border: 1px solid var(--line);
+    box-shadow: 0 16px 38px rgba(16, 35, 41, 0.12);
+  }
+
+  .contact-hero img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(10, 36, 43, 0.78), rgba(10, 36, 43, 0.28));
+    display: flex;
+    align-items: center;
+    padding: 28px;
+    color: #fff;
+  }
+
+  .hero-overlay h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    margin-bottom: 8px;
+  }
+
+  .contact-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 26px;
+    box-shadow: 0 12px 30px rgba(16, 35, 41, 0.1);
+    margin-bottom: 36px;
+  }
+
+  .form-control {
+    border: 1px solid #c8d8de;
+    border-radius: 12px;
+    padding: 10px 12px;
+  }
+
+  .form-control:focus {
+    border-color: #83b9c2;
+    box-shadow: 0 0 0 0.2rem rgba(15, 122, 125, 0.14);
+  }
+
+  .btn-send {
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(140deg, var(--primary), #0b686b);
+    color: #fff;
+    font-weight: 700;
+    padding: 11px 22px;
+    box-shadow: 0 10px 24px rgba(15, 122, 125, 0.24);
+  }
+
+  .btn-send:hover {
+    color: #fff;
+  }
+
+  @media (max-width: 767px) {
+    .contact-hero img {
+      height: 240px;
+    }
+
+    .hero-overlay {
+      padding: 16px;
+    }
+  }
+</style>
+
+<nav class="navbar navbar-expand-lg contact-nav">
+  <div class="container">
+    <a href="/" class="navbar-brand" style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: #102329;">StudentMS</a>
+    <div class="ml-auto d-flex" style="gap: 8px;">
+      <a href="/login" class="btn btn-outline-secondary btn-sm">Login</a>
+      <a href="/registration" class="btn btn-outline-secondary btn-sm">Register</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="contact-hero">
+    <img src="{% static 'dist/img/contact.jpg' %}" alt="Contact banner">
+    <div class="hero-overlay">
+      <div>
+        <h1>Get In Touch</h1>
+        <p class="mb-0">Questions, feedback, or support requests. Our team is here to help you quickly.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="contact-card">
+    <h3 class="mb-3" style="font-family: 'Space Grotesk', sans-serif;">Send Us A Message</h3>
+    <form action="/contact" method="post">
+      {% csrf_token %}
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="contactName" class="font-weight-bold">Full Name</label>
+          <input type="text" class="form-control" id="contactName" name="name" placeholder="Enter your full name" required>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="contactEmail" class="font-weight-bold">Email Address</label>
+          <input type="email" class="form-control" id="contactEmail" name="email" placeholder="Enter your email" required>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="contactPhone" class="font-weight-bold">Phone Number</label>
+          <input type="text" class="form-control" id="contactPhone" name="phone" placeholder="Enter phone number" required>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="contactDesc" class="font-weight-bold">How can we help you?</label>
+        <textarea class="form-control" id="contactDesc" rows="6" name="desc" placeholder="Write your message" required></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-send">Submit Message</button>
+    </form>
+  </div>
+</div>
+
+{% endblock content%}
