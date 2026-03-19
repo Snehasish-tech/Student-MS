@@ -4,5 +4,7 @@
   "buildCommand": "bash build_files.sh",
   "env": {
     "PYTHONUNBUFFERED": "1"
-  }
+  },
+  "cleanUrls": true,
+  "trailingSlash": false
 }

@@ -19,6 +19,7 @@ ENV/
 local_settings.py
 db.sqlite3
 media/
+staticfiles/
 
 # Build / packaging
 build/
