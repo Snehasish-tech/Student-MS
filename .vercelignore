@@ -1,0 +1,10 @@
+env/
+.venv/
+venv/
+*.egg-info/
+.DS_Store
+Thumbs.db
+.git
+.gitignore
+README.md
+.python-version

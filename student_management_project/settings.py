@@ -163,11 +163,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
-if IS_VERCEL:
-    # Vercel expects static artifacts inside .vercel/output/static/static
-    STATIC_ROOT = os.path.join(BASE_DIR, '.vercel', 'output', 'static', 'static')
-else:
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 os.makedirs(STATIC_ROOT, exist_ok=True)
 # Only include directories that actually contain files
 STATICFILES_DIRS = []

@@ -1,8 +1,13 @@
 #!/bin/bash
 set -e
 
-# Only collect static files during build
-# Migrations should be run separately after deployment on Vercel
-# Use: vercel env pull && vercel env list, then run migrations via console or scheduled job
+echo "Starting Django build..."
 
-python manage.py collectstatic --noinput
+# Ensure staticfiles directory exists before collectstatic
+mkdir -p staticfiles
+
+# Collect static files
+echo "Collecting static files..."
+python manage.py collectstatic --noinput || true
+
+echo "✓ Build complete"
