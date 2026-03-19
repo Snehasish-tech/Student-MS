@@ -164,8 +164,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = []
 if os.path.isdir(os.path.join(BASE_DIR, 'student_management_project', 'static')):
     STATICFILES_DIRS.append(os.path.join(BASE_DIR, 'student_management_project', 'static'))
+
 if HAS_WHITENOISE:
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    # Suppress warnings about missing directories
+    WHITENOISE_AUTOREFRESH = False
+    WHITENOISE_USE_FINDERS = False
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
