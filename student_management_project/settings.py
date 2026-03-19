@@ -39,7 +39,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-local-dev-key-change-me')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 
-default_hosts = ['127.0.0.1', 'localhost', '.vercel.app']
+default_hosts = ['127.0.0.1', 'localhost', '.vercel.app', '.onrender.com']
 env_hosts = [host.strip() for host in os.getenv('ALLOWED_HOSTS', '').split(',') if host.strip()]
 ALLOWED_HOSTS = default_hosts + env_hosts
 
