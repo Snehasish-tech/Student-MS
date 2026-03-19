@@ -3,241 +3,311 @@
 
 {% block content %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-  :root {
-    --sky: #0ea5e9;
-    --sky-dark: #0284c7;
-    --navy: #0c1a2e;
-    --ink: #1e293b;
-    --muted: #64748b;
-    --soft: #94a3b8;
-    --stroke: #e2e8f0;
-    --bg: #f0f6ff;
-    --surface: #ffffff;
-    --green: #10b981;
-    --amber: #f59e0b;
-  }
+/* ── TOKENS ── */
+:root {
+  --ink-900:  #102134;
+  --ink-700:  #284660;
+  --line:     #d8e5f1;
+  --card:     #ffffff;
+  --accent:   #0077b6;
+  --accent-2: #00a6fb;
+  --deep:     #0f2a3f;
+  --success:  #1f9d6c;
+  --rose:     #e11d48;
+  --amber:    #d97706;
+  --bg:       #f0f7ff;
+  --soft:     #7a9ab8;
+  --grid:     rgba(181,222,247,.09);
+}
 
-  *, *::before, *::after { box-sizing: border-box; }
-  body { background: var(--bg); font-family: 'DM Sans', sans-serif; color: var(--ink); }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  .nav-shell {
-    background: var(--navy); padding: 0 32px;
-    display: flex; align-items: center; justify-content: space-between;
-    height: 60px; position: sticky; top: 0; z-index: 100;
-  }
-  .nav-brand { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; color: #fff; text-decoration: none; }
-  .nav-back {
-    color: rgba(255,255,255,.7); text-decoration: none; font-size: 0.875rem;
-    font-weight: 500; padding: 6px 14px; border-radius: 8px;
-    border: 1px solid rgba(255,255,255,.15); transition: all .2s;
-  }
-  .nav-back:hover { background: rgba(255,255,255,.08); color: #fff; }
+body { font-family: 'Manrope', sans-serif; background: var(--bg); color: var(--ink-900); }
 
-  /* PROFILE HERO */
-  .profile-hero {
-    background: var(--navy);
-    padding: 40px 40px 80px;
-    position: relative; overflow: hidden;
-  }
+/* ── TOPBAR ── */
+.topbar {
+  background: rgba(255,255,255,.9); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line); height: 64px;
+  display: flex; align-items: center;
+  position: sticky; top: 0; z-index: 60;
+}
 
-  .profile-hero::before {
-    content: '';
-    position: absolute; bottom: -60px; left: 50%;
-    width: 300px; height: 300px; transform: translateX(-50%);
-    background: radial-gradient(circle, rgba(14,165,233,.15) 0%, transparent 70%);
-    border-radius: 50%;
-  }
+.topbar-inner {
+  width: min(1100px, 100% - 40px); margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+}
 
-  .profile-hero-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; gap: 28px; position: relative; z-index: 1; }
+.brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--deep); font-family: 'Space Grotesk', sans-serif; font-weight: 700; }
+.brand-badge {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 700; font-size: .9rem;
+  box-shadow: 0 6px 14px rgba(0,119,182,.28);
+}
 
-  .profile-avatar-wrap { position: relative; flex-shrink: 0; }
+.nav-back {
+  color: var(--ink-700); text-decoration: none; font-size: .84rem; font-weight: 600;
+  padding: 7px 14px; border-radius: 9px; border: 1px solid var(--line); transition: all .2s;
+}
+.nav-back:hover { border-color: #b8d5ea; color: var(--accent); }
 
-  .profile-avatar {
-    width: 90px; height: 90px; border-radius: 22px;
-    background: linear-gradient(135deg, var(--sky), #0369a1);
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; color: #fff;
-    border: 3px solid rgba(255,255,255,.15);
-  }
+/* ── PROFILE HERO ── */
+.profile-hero {
+  background: linear-gradient(125deg, var(--deep) 0%, #14476a 55%, #1c6ca0 100%);
+  padding: 48px 0 80px;
+  position: relative; overflow: hidden;
+}
 
-  .avatar-status {
-    position: absolute; bottom: -4px; right: -4px;
-    width: 22px; height: 22px; border-radius: 50%;
-    background: var(--green); border: 3px solid var(--navy);
-  }
+.profile-hero::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
 
-  .profile-info { flex: 1; }
+.ph-glow {
+  position: absolute; border-radius: 50%; pointer-events: none;
+}
+.pg-a { width: 400px; height: 400px; top: -100px; right: -60px; background: radial-gradient(circle, rgba(0,166,251,.2) 0%, transparent 70%); }
+.pg-b { width: 220px; height: 220px; bottom: -60px; left: 8%;  background: radial-gradient(circle, rgba(0,119,182,.14) 0%, transparent 70%); }
 
-  .profile-name {
-    font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800;
-    color: #fff; letter-spacing: -0.5px; margin-bottom: 4px;
-  }
+.ph-inner {
+  width: min(1100px, 100% - 40px); margin: 0 auto;
+  display: flex; align-items: center; gap: 28px;
+  position: relative; z-index: 1;
+}
 
-  .profile-role {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: rgba(14,165,233,.2); border: 1px solid rgba(14,165,233,.3);
-    color: var(--sky); font-size: 0.78rem; font-weight: 700;
-    padding: 4px 10px; border-radius: 20px; margin-bottom: 10px;
-  }
+/* avatar */
+.av-wrap { position: relative; flex-shrink: 0; }
 
-  .profile-meta {
-    display: flex; flex-wrap: wrap; gap: 16px;
-  }
+.av-ring {
+  width: 96px; height: 96px; border-radius: 24px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2rem; font-weight: 800; color: #fff;
+  border: 3px solid rgba(255,255,255,.18);
+  box-shadow: 0 12px 28px rgba(0,119,182,.35);
+}
 
-  .meta-item { color: rgba(255,255,255,.55); font-size: 0.82rem; display: flex; align-items: center; gap: 5px; }
-  .meta-item span { color: rgba(255,255,255,.8); font-weight: 500; }
+.av-status {
+  position: absolute; bottom: -4px; right: -4px;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--success); border: 3px solid var(--deep);
+}
 
-  /* CONTENT */
-  .content { max-width: 900px; margin: -44px auto 0; padding: 0 40px 60px; position: relative; z-index: 2; }
+/* info */
+.ph-info { flex: 1; }
 
-  .content-grid { display: grid; grid-template-columns: 1fr 280px; gap: 20px; }
+.ph-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+  font-weight: 700; color: #fff; letter-spacing: -.03em; margin-bottom: 8px;
+}
 
-  /* Form card */
-  .form-card {
-    background: var(--surface); border: 1px solid var(--stroke);
-    border-radius: 16px; overflow: hidden;
-    box-shadow: 0 4px 16px rgba(0,0,0,.04);
-  }
+.ph-role {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(0,166,251,.2); border: 1px solid rgba(0,166,251,.3);
+  color: #7ed8ff; font-size: .74rem; font-weight: 700;
+  padding: 4px 12px; border-radius: 99px; margin-bottom: 12px;
+}
 
-  .form-section {
-    padding: 24px 28px;
-    border-bottom: 1px solid var(--stroke);
-  }
+.ph-meta { display: flex; flex-wrap: wrap; gap: 16px; }
+.ph-meta-item { color: rgba(235,247,255,.5); font-size: .81rem; display: flex; align-items: center; gap: 5px; }
+.ph-meta-item span { color: rgba(235,247,255,.82); font-weight: 600; }
 
-  .form-section:last-child { border-bottom: none; }
+/* ── CONTENT ── */
+.content {
+  width: min(1100px, 100% - 40px);
+  margin: -44px auto 0;
+  padding-bottom: 64px;
+  position: relative; z-index: 2;
+}
 
-  .form-section-title {
-    font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700;
-    color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 18px;
-    display: flex; align-items: center; gap: 8px;
-  }
+.content-grid { display: grid; grid-template-columns: 1fr 290px; gap: 18px; }
 
-  .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .field-full { grid-column: 1 / -1; }
+/* ── FORM CARD ── */
+.form-card {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 18px; overflow: hidden;
+  box-shadow: 0 6px 20px rgba(15,42,63,.06);
+}
 
-  .field-wrap label {
-    display: block; font-size: 0.78rem; font-weight: 600;
-    color: var(--muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px;
-  }
+.form-section { padding: 22px 26px; border-bottom: 1px solid var(--line); }
+.form-section:last-of-type { border-bottom: none; }
 
-  .field-wrap input,
-  .field-wrap textarea,
-  .field-wrap select {
-    width: 100%; border: 1.5px solid var(--stroke); border-radius: 10px;
-    padding: 10px 14px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
-    color: var(--ink); background: #f8fafc; outline: none; transition: all .2s;
-  }
+.fs-label {
+  font-size: .68rem; font-weight: 700; letter-spacing: 1.8px;
+  text-transform: uppercase; color: var(--soft);
+  margin-bottom: 16px; padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
 
-  .field-wrap input:focus,
-  .field-wrap textarea:focus { border-color: var(--sky); background: #fff; box-shadow: 0 0 0 3px rgba(14,165,233,.1); }
-  .field-wrap input[readonly] { background: #f1f5f9; color: var(--muted); cursor: not-allowed; }
+.field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
+.field-full { grid-column: 1 / -1; }
 
-  .field-wrap textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
+.field label {
+  display: block; font-size: .72rem; font-weight: 700;
+  color: var(--ink-700); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 5px;
+}
 
-  /* Password strength */
-  .pwd-wrap { position: relative; }
-  .pwd-toggle {
-    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-    background: none; border: none; cursor: pointer; color: var(--soft); font-size: 1rem;
-  }
+.field input,
+.field textarea {
+  width: 100%; border: 1.5px solid var(--line); border-radius: 11px;
+  padding: 10px 14px; font-family: 'Manrope', sans-serif; font-size: .9rem;
+  color: var(--ink-900); background: #fafdff; outline: none; transition: all .2s;
+}
 
-  .strength-bar { display: flex; gap: 3px; margin-top: 6px; }
-  .strength-seg { height: 3px; flex: 1; border-radius: 3px; background: var(--stroke); transition: background .3s; }
-  .strength-seg.weak   { background: var(--rose, #f43f5e); }
-  .strength-seg.medium { background: var(--amber); }
-  .strength-seg.strong { background: var(--green); }
-  .strength-text { font-size: 0.72rem; color: var(--soft); margin-top: 4px; }
+.field input:focus,
+.field textarea:focus {
+  border-color: var(--accent); background: #fff;
+  box-shadow: 0 0 0 3px rgba(0,119,182,.09);
+}
 
-  .form-actions {
-    padding: 20px 28px;
-    display: flex; gap: 12px; align-items: center;
-  }
+.field input[readonly] { background: #f0f6fb; color: var(--soft); cursor: not-allowed; }
+.field textarea { resize: vertical; min-height: 88px; line-height: 1.6; }
 
-  .btn-save {
-    background: linear-gradient(135deg, var(--sky), var(--sky-dark));
-    color: #fff; border: none; border-radius: 10px; padding: 11px 28px;
-    font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 700;
-    cursor: pointer; transition: all .2s;
-  }
-  .btn-save:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(14,165,233,.3); }
+/* password field */
+.pwd-wrap { position: relative; }
+.pwd-wrap input { padding-right: 44px; }
+.pwd-eye {
+  position: absolute; right: 13px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; cursor: pointer; color: var(--soft); font-size: .95rem;
+  transition: color .2s;
+}
+.pwd-eye:hover { color: var(--accent); }
 
-  .btn-ghost {
-    background: transparent; border: 1.5px solid var(--stroke);
-    border-radius: 10px; padding: 10px 20px;
-    font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600;
-    color: var(--muted); cursor: pointer; text-decoration: none; display: inline-block; transition: all .2s;
-  }
-  .btn-ghost:hover { border-color: var(--sky); color: var(--sky); }
+/* strength */
+.str-bars { display: flex; gap: 3px; margin-top: 7px; }
+.str-seg { height: 3px; flex: 1; border-radius: 3px; background: var(--line); transition: background .3s; }
+.str-seg.w { background: var(--rose); }
+.str-seg.m { background: var(--amber); }
+.str-seg.s { background: var(--success); }
+.str-txt { font-size: .71rem; margin-top: 4px; font-weight: 600; color: var(--soft); }
 
-  /* Sidebar */
-  .sidebar { display: flex; flex-direction: column; gap: 16px; }
+/* form actions */
+.form-actions {
+  padding: 18px 26px;
+  display: flex; gap: 12px; align-items: center;
+  border-top: 1px solid var(--line);
+}
 
-  .info-card {
-    background: var(--surface); border: 1px solid var(--stroke);
-    border-radius: 14px; padding: 18px;
-    box-shadow: 0 4px 16px rgba(0,0,0,.04);
-  }
+.btn-save {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff; border: none; border-radius: 11px;
+  padding: 11px 26px; font-family: 'Manrope', sans-serif;
+  font-size: .9rem; font-weight: 700; cursor: pointer;
+  box-shadow: 0 8px 18px rgba(0,119,182,.22); transition: all .22s;
+}
+.btn-save:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(0,119,182,.32); }
 
-  .info-card-title { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 14px; }
+.btn-ghost {
+  background: transparent; border: 1.5px solid var(--line); border-radius: 11px;
+  padding: 10px 20px; font-family: 'Manrope', sans-serif;
+  font-size: .9rem; font-weight: 600; color: var(--ink-700);
+  cursor: pointer; text-decoration: none; display: inline-block; transition: all .2s;
+}
+.btn-ghost:hover { border-color: #b8d5ea; color: var(--accent); }
 
-  .info-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--stroke); }
-  .info-row:last-child { border-bottom: none; }
-  .info-key { font-size: 0.8rem; color: var(--muted); }
-  .info-val { font-size: 0.82rem; font-weight: 600; color: var(--ink); text-align: right; }
+/* ── SIDEBAR ── */
+.sidebar { display: flex; flex-direction: column; gap: 14px; }
 
-  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; }
-  .badge-green { background: #d1fae5; color: #065f46; }
-  .badge-sky   { background: #e0f2fe; color: #0369a1; }
+.s-card {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 16px; padding: 18px;
+  box-shadow: 0 4px 14px rgba(15,42,63,.05);
+}
 
-  /* Danger zone */
-  .danger-card {
-    background: #fff5f5; border: 1.5px solid #fecdd3;
-    border-radius: 14px; padding: 18px;
-  }
+.sc-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: .7rem; font-weight: 700; color: var(--soft);
+  letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 14px;
+}
 
-  .danger-title { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; color: #e11d48; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
-  .danger-text { font-size: 0.8rem; color: #9f1239; line-height: 1.5; margin-bottom: 12px; }
+.sc-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 0; border-bottom: 1px solid var(--line);
+}
+.sc-row:last-child { border-bottom: none; }
+.sc-key { font-size: .78rem; color: var(--soft); }
+.sc-val { font-size: .8rem; font-weight: 700; color: var(--ink-900); text-align: right; }
 
-  .btn-danger {
-    background: transparent; border: 1.5px solid #fda4af; border-radius: 8px;
-    padding: 7px 14px; font-size: 0.8rem; font-weight: 600; color: #e11d48;
-    cursor: pointer; transition: all .2s; width: 100%;
-  }
-  .btn-danger:hover { background: #ffe4e6; border-color: #e11d48; }
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 9px; border-radius: 20px; font-size: .7rem; font-weight: 700;
+}
+.bg-green { background: #d1fae5; color: #065f46; }
+.bg-blue  { background: #dbeafe; color: var(--accent); }
 
-  @media (max-width: 768px) {
-    .content-grid { grid-template-columns: 1fr; }
-    .field-grid { grid-template-columns: 1fr; }
-    .profile-hero-inner { flex-direction: column; text-align: center; }
-    .profile-meta { justify-content: center; }
-    .content { padding: 0 16px 40px; }
-  }
+/* achievement bar */
+.ach-bar { height: 4px; border-radius: 4px; background: var(--line); margin-top: 4px; overflow: hidden; }
+.ach-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transition: width .6s ease; }
+
+/* danger */
+.danger-card {
+  background: #fff5f7; border: 1.5px solid #fecdd3; border-radius: 14px; padding: 16px;
+}
+.dc-title { font-size: .7rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--rose); margin-bottom: 8px; }
+.dc-text  { font-size: .78rem; color: #9f1239; line-height: 1.55; margin-bottom: 12px; }
+.btn-danger {
+  width: 100%; background: transparent; border: 1.5px solid #fda4af;
+  border-radius: 9px; padding: 7px 14px;
+  font-size: .78rem; font-weight: 700; color: var(--rose);
+  cursor: pointer; transition: all .2s;
+}
+.btn-danger:hover { background: #ffe4e6; border-color: var(--rose); }
+
+/* alerts */
+.alert-success {
+  background: #d1fae5; border: 1.5px solid #6ee7b7;
+  color: #065f46; border-radius: 11px; padding: 12px 16px;
+  font-weight: 700; font-size: .88rem; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+@media (max-width: 900px) {
+  .content-grid { grid-template-columns: 1fr; }
+  .field-grid { grid-template-columns: 1fr; }
+  .ph-inner { flex-direction: column; text-align: center; }
+  .ph-meta { justify-content: center; }
+}
 </style>
 
-<nav class="nav-shell">
-  <a class="nav-brand" href="/">StudentMS</a>
-  <a href="{% url 'staff_home' %}" class="nav-back">← Dashboard</a>
-</nav>
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="/" class="brand">
+      <span class="brand-badge">S</span>
+      StudentMS
+    </a>
+    <a href="{% url 'staff_home' %}" class="nav-back">← Dashboard</a>
+  </div>
+</header>
 
 <!-- PROFILE HERO -->
 <div class="profile-hero">
-  <div class="profile-hero-inner">
-    <div class="profile-avatar-wrap">
-      <div class="profile-avatar">
+  <div class="ph-glow pg-a"></div>
+  <div class="ph-glow pg-b"></div>
+
+  <div class="ph-inner">
+    <div class="av-wrap">
+      <div class="av-ring">
         {{ user.first_name|default:"S"|slice:":1" }}{{ user.last_name|default:"M"|slice:":1" }}
       </div>
-      <div class="avatar-status"></div>
+      <div class="av-status"></div>
     </div>
-    <div class="profile-info">
-      <h1 class="profile-name">{{ user.get_full_name|default:"Sarah Mitchell" }}</h1>
-      <div class="profile-role">🎓 Staff Member</div>
-      <div class="profile-meta">
-        <div class="meta-item">📧 <span>{{ user.email|default:"sarah.mitchell@studentms.edu" }}</span></div>
-        <div class="meta-item">📚 <span>{{ staff.department|default:"Computer Science" }}</span></div>
-        <div class="meta-item">📅 <span>Joined {{ staff.joined|default:"Aug 2022" }}</span></div>
+
+    <div class="ph-info">
+      <h1 class="ph-name">{{ user.get_full_name|default:"Sarah Mitchell" }}</h1>
+      <div class="ph-role">🎓 Staff Member</div>
+      <div class="ph-meta">
+        <div class="ph-meta-item">📧 <span>{{ user.email|default:"sarah.mitchell@studentms.edu" }}</span></div>
+        <div class="ph-meta-item">📚 <span>{{ staff.department|default:"Computer Science" }}</span></div>
+        <div class="ph-meta-item">📅 <span>Joined {{ staff.joined|default:"Aug 2022" }}</span></div>
+        <div class="ph-meta-item">🆔 <span>EMP-2248</span></div>
       </div>
     </div>
   </div>
@@ -248,9 +318,7 @@
 
   {% if messages %}
     {% for message in messages %}
-      <div style="background:#d1fae5;border:1.5px solid #6ee7b7;color:#065f46;border-radius:10px;padding:12px 18px;margin-bottom:16px;font-weight:600;">
-        ✅ {{ message }}
-      </div>
+      <div class="alert-success">✅ {{ message }}</div>
     {% endfor %}
   {% endif %}
 
@@ -260,45 +328,45 @@
     <form method="POST" action="{% url 'staff_profile_update' %}" class="form-card">
       {% csrf_token %}
 
+      <!-- Personal info -->
       <div class="form-section">
-        <div class="form-section-title">👤 Personal Information</div>
+        <div class="fs-label">👤 Personal Information</div>
         <div class="field-grid">
-          <div class="field-wrap">
+          <div class="field">
             <label>First Name</label>
             <input type="text" name="first_name" value="{{ user.first_name|default:'Sarah' }}" required placeholder="First name">
           </div>
-          <div class="field-wrap">
+          <div class="field">
             <label>Last Name</label>
             <input type="text" name="last_name" value="{{ user.last_name|default:'Mitchell' }}" required placeholder="Last name">
           </div>
-          <div class="field-wrap field-full">
-            <label>Email Address</label>
+          <div class="field field-full">
+            <label>Email Address <span style="font-weight:400;text-transform:none;color:var(--soft);">(cannot change)</span></label>
             <input type="email" value="{{ user.email|default:'sarah.mitchell@studentms.edu' }}" readonly>
           </div>
-          <div class="field-wrap field-full">
+          <div class="field field-full">
             <label>Address</label>
-            <textarea name="address" placeholder="Your address…">{{ staff.address|default:"42 Knowledge Lane, Academic Block C, Campus Road" }}</textarea>
+            <textarea name="address" placeholder="Your full address…">{{ staff.address|default:"42 Knowledge Lane, Academic Block C, Campus Road" }}</textarea>
           </div>
         </div>
       </div>
 
+      <!-- Security -->
       <div class="form-section">
-        <div class="form-section-title">🔒 Change Password</div>
-        <div class="field-grid">
-          <div class="field-wrap field-full">
-            <label>New Password <span style="color:var(--soft);text-transform:none;font-weight:400;">(leave blank to keep current)</span></label>
-            <div class="pwd-wrap">
-              <input type="password" name="password" id="pwd-field" placeholder="Enter new password…" oninput="checkStrength(this.value)">
-              <button type="button" class="pwd-toggle" onclick="togglePwd()">👁</button>
-            </div>
-            <div class="strength-bar">
-              <div class="strength-seg" id="seg1"></div>
-              <div class="strength-seg" id="seg2"></div>
-              <div class="strength-seg" id="seg3"></div>
-              <div class="strength-seg" id="seg4"></div>
-            </div>
-            <div class="strength-text" id="strength-text"></div>
+        <div class="fs-label">🔒 Change Password</div>
+        <div class="field field-full">
+          <label>New Password <span style="font-weight:400;text-transform:none;color:var(--soft);">(leave blank to keep current)</span></label>
+          <div class="pwd-wrap">
+            <input type="password" name="password" id="pwd-field" placeholder="Enter new password…" oninput="checkStrength(this.value)">
+            <button type="button" class="pwd-eye" onclick="togglePwd()">👁</button>
           </div>
+          <div class="str-bars">
+            <div class="str-seg" id="sg1"></div>
+            <div class="str-seg" id="sg2"></div>
+            <div class="str-seg" id="sg3"></div>
+            <div class="str-seg" id="sg4"></div>
+          </div>
+          <div class="str-txt" id="str-txt"></div>
         </div>
       </div>
 
@@ -311,54 +379,77 @@
     <!-- SIDEBAR -->
     <div class="sidebar">
 
-      <div class="info-card">
-        <div class="info-card-title">📋 Account Info</div>
-        <div class="info-row">
-          <span class="info-key">Status</span>
-          <span class="info-val"><span class="badge badge-green">● Active</span></span>
+      <!-- Account info -->
+      <div class="s-card">
+        <div class="sc-title">📋 Account Info</div>
+        <div class="sc-row">
+          <span class="sc-key">Status</span>
+          <span class="sc-val"><span class="badge bg-green">● Active</span></span>
         </div>
-        <div class="info-row">
-          <span class="info-key">Role</span>
-          <span class="info-val"><span class="badge badge-sky">Staff</span></span>
+        <div class="sc-row">
+          <span class="sc-key">Role</span>
+          <span class="sc-val"><span class="badge bg-blue">Staff</span></span>
         </div>
-        <div class="info-row">
-          <span class="info-key">Department</span>
-          <span class="info-val">Comp. Science</span>
+        <div class="sc-row">
+          <span class="sc-key">Department</span>
+          <span class="sc-val">Comp. Science</span>
         </div>
-        <div class="info-row">
-          <span class="info-key">Employee ID</span>
-          <span class="info-val">EMP-2248</span>
+        <div class="sc-row">
+          <span class="sc-key">Employee ID</span>
+          <span class="sc-val">EMP-2248</span>
         </div>
-        <div class="info-row">
-          <span class="info-key">Subjects Assigned</span>
-          <span class="info-val">6</span>
+        <div class="sc-row">
+          <span class="sc-key">Subjects Assigned</span>
+          <span class="sc-val">6</span>
         </div>
-        <div class="info-row">
-          <span class="info-key">Last Login</span>
-          <span class="info-val">Today, 8:52 AM</span>
-        </div>
-      </div>
-
-      <div class="info-card">
-        <div class="info-card-title">🏆 Achievements</div>
-        <div class="info-row">
-          <span class="info-key">✅ Profile complete</span>
-          <span class="info-val" style="color:var(--green);">Done</span>
-        </div>
-        <div class="info-row">
-          <span class="info-key">📝 100 classes marked</span>
-          <span class="info-val" style="color:var(--green);">Done</span>
-        </div>
-        <div class="info-row">
-          <span class="info-key">📊 50 results entered</span>
-          <span class="info-val" style="color:var(--amber);">82%</span>
+        <div class="sc-row">
+          <span class="sc-key">Last Login</span>
+          <span class="sc-val">Today, 8:52 AM</span>
         </div>
       </div>
 
+      <!-- Achievements -->
+      <div class="s-card">
+        <div class="sc-title">🏆 Achievements</div>
+        <div class="sc-row" style="flex-direction:column;align-items:flex-start;gap:6px;">
+          <div style="display:flex;justify-content:space-between;width:100%;">
+            <span class="sc-key">✅ Profile complete</span>
+            <span class="sc-val" style="color:var(--success);">100%</span>
+          </div>
+          <div class="ach-bar" style="width:100%;"><div class="ach-fill" style="width:100%;"></div></div>
+        </div>
+        <div class="sc-row" style="flex-direction:column;align-items:flex-start;gap:6px;">
+          <div style="display:flex;justify-content:space-between;width:100%;">
+            <span class="sc-key">📝 100 classes marked</span>
+            <span class="sc-val" style="color:var(--success);">Done ✓</span>
+          </div>
+          <div class="ach-bar" style="width:100%;"><div class="ach-fill" style="width:100%;"></div></div>
+        </div>
+        <div class="sc-row" style="flex-direction:column;align-items:flex-start;gap:6px;">
+          <div style="display:flex;justify-content:space-between;width:100%;">
+            <span class="sc-key">📊 50 results entered</span>
+            <span class="sc-val" style="color:var(--amber);">82%</span>
+          </div>
+          <div class="ach-bar" style="width:100%;"><div class="ach-fill" style="width:82%;background:linear-gradient(90deg,var(--amber),#fbbf24);"></div></div>
+        </div>
+      </div>
+
+      <!-- Tip card -->
+      <div style="background:linear-gradient(135deg,var(--deep),#14476a);border-radius:14px;padding:18px;color:#fff;">
+        <div style="font-size:1.3rem;margin-bottom:8px;">💡</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.9rem;margin-bottom:6px;">Quick Tips</div>
+        <ul style="font-size:.78rem;opacity:.75;line-height:1.8;padding-left:16px;">
+          <li>Keep your address up to date for leave approvals</li>
+          <li>Use a strong password with symbols & numbers</li>
+          <li>Contact admin to update your email or department</li>
+        </ul>
+      </div>
+
+      <!-- Danger zone -->
       <div class="danger-card">
-        <div class="danger-title">⚠️ Danger Zone</div>
-        <div class="danger-text">Deactivating your account will revoke access to all portal features. This action requires admin approval.</div>
-        <button class="btn-danger" onclick="alert('Please contact admin to proceed.')">Request Deactivation</button>
+        <div class="dc-title">⚠️ Danger Zone</div>
+        <div class="dc-text">Requesting deactivation will revoke all portal access. This requires admin approval and cannot be self-reversed.</div>
+        <button class="btn-danger" onclick="alert('Please contact your admin to proceed.')">Request Deactivation</button>
       </div>
 
     </div>
@@ -372,21 +463,21 @@
   }
 
   function checkStrength(val) {
-    const segs = [document.getElementById('seg1'), document.getElementById('seg2'), document.getElementById('seg3'), document.getElementById('seg4')];
-    const txt = document.getElementById('strength-text');
-    segs.forEach(s => { s.className = 'strength-seg'; });
+    const segs = ['sg1','sg2','sg3','sg4'].map(id => document.getElementById(id));
+    const txt  = document.getElementById('str-txt');
+    segs.forEach(s => s.className = 'str-seg');
     if (!val) { txt.textContent = ''; return; }
     let score = 0;
     if (val.length >= 8) score++;
     if (/[A-Z]/.test(val)) score++;
     if (/[0-9]/.test(val)) score++;
     if (/[^A-Za-z0-9]/.test(val)) score++;
-    const classes = ['weak', 'medium', 'medium', 'strong'];
-    const labels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
-    const colors = ['', '#f43f5e', '#f59e0b', '#f59e0b', '#10b981'];
-    for (let i = 0; i < score; i++) segs[i].classList.add(classes[score - 1]);
-    txt.textContent = labels[score];
-    txt.style.color = colors[score];
+    const cls  = ['','w','m','m','s'];
+    const lbls = ['','Weak','Fair','Good','Strong ✓'];
+    const cols = ['','#e11d48','#d97706','#d97706','#1f9d6c'];
+    for (let i = 0; i < score; i++) segs[i].classList.add(cls[score]);
+    txt.textContent = lbls[score];
+    txt.style.color = cols[score];
   }
 </script>
 

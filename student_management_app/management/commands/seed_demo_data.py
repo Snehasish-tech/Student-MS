@@ -229,10 +229,13 @@ class Command(BaseCommand):
         return subject
 
     def _seed_attendance_and_results(self, subjects, students, session_year):
-        demo_dates = [date.today() - timedelta(days=i) for i in range(1, 8)]
+        # Create attendance records for the past 45 days (covering ~9 weeks)
+        demo_dates = [date.today() - timedelta(days=i) for i in range(1, 45)]
 
         for subject in subjects:
             subject_students = [s for s in students if s.course_id_id == subject.course_id_id]
+            
+            # Attendance records
             for day in demo_dates:
                 attendance, _ = Attendance.objects.get_or_create(
                     subject_id=subject,
@@ -241,19 +244,21 @@ class Command(BaseCommand):
                 )
 
                 for student in subject_students:
+                    # 80% present, 20% absent (realistic pattern)
                     AttendanceReport.objects.get_or_create(
                         student_id=student,
                         attendance_id=attendance,
-                        defaults={"status": random.choice([True, True, True, False])},
+                        defaults={"status": random.random() < 0.8},
                     )
 
+            # Results (with varied marks for realistic distribution)
             for student in subject_students:
                 StudentResult.objects.get_or_create(
                     student_id=student,
                     subject_id=subject,
                     defaults={
-                        "subject_exam_marks": random.randint(55, 95),
-                        "subject_assignment_marks": random.randint(10, 25),
+                        "subject_exam_marks": random.randint(50, 98),
+                        "subject_assignment_marks": random.randint(8, 25),
                     },
                 )
 

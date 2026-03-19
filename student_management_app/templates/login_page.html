@@ -1,406 +1,659 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block content %}
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-  :root {
-    --navy: #0c1a2e;
-    --navy-mid: #112035;
-    --sky: #38bdf8;
-    --sky-dark: #0ea5e9;
-    --ink: #1e293b;
-    --muted: #64748b;
-    --soft: #94a3b8;
-    --stroke: #e2e8f0;
-    --bg: #f0f6ff;
-    --surface: #ffffff;
-    --green: #10b981;
-  }
+/* ─── ROOT TOKENS (match home page exactly) ─────────────────────────── */
+:root {
+  --ink-900:  #102134;
+  --ink-700:  #284660;
+  --mist:     #eff6fb;
+  --line:     #d8e5f1;
+  --card:     #ffffff;
+  --accent:   #0077b6;
+  --accent-2: #00a6fb;
+  --deep:     #0f2a3f;
+  --success:  #1f9d6c;
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  /* Derived */
+  --sky-glow: rgba(0, 166, 251, 0.18);
+  --grid-line: rgba(181, 222, 247, 0.10);
+}
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    min-height: 100vh;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    background: var(--navy);
-    color: var(--ink);
-  }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* ── LEFT PANEL ── */
-  .left-panel {
-    background: var(--navy);
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 40px 48px;
-    min-height: 100vh;
-  }
+html, body {
+  height: 100%;
+  font-family: 'Manrope', sans-serif;
+  color: var(--ink-900);
+  overflow: hidden;
+}
 
-  /* Decorative blobs */
-  .blob {
-    position: absolute;
-    border-radius: 50%;
-    pointer-events: none;
-  }
+/* ─── FULL-BLEED SPLIT ───────────────────────────────────────────────── */
+.auth-shell {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  height: 100vh;
+  background: var(--deep);
+}
 
-  .blob-1 {
-    width: 420px; height: 420px;
-    background: radial-gradient(circle, rgba(14,165,233,.18) 0%, transparent 70%);
-    top: -120px; left: -100px;
-  }
+/* ══════════ LEFT: VISUAL PANEL ══════════════════════════════════════ */
+.v-panel {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 48px 52px;
 
-  .blob-2 {
-    width: 300px; height: 300px;
-    background: radial-gradient(circle, rgba(16,185,129,.1) 0%, transparent 70%);
-    bottom: 60px; right: -80px;
-  }
+  background:
+    radial-gradient(circle at 18% 16%, rgba(0,119,182,.22) 0%, transparent 42%),
+    radial-gradient(circle at 78% 76%, rgba(0,166,251,.14) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(15,42,63,.0) 0%, #081929 100%);
+}
 
-  .blob-3 {
-    width: 160px; height: 160px;
-    background: radial-gradient(circle, rgba(14,165,233,.12) 0%, transparent 70%);
-    top: 50%; left: 60%;
-  }
+/* subtle dot grid — same as hero-grid in home page */
+.v-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 44px 44px;
+  pointer-events: none;
+}
 
-  /* Grid decoration */
-  .grid-overlay {
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-  }
+/* animated ambient orb */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  animation: drift 12s ease-in-out infinite alternate;
+}
+.orb-a {
+  width: 520px; height: 520px;
+  background: radial-gradient(circle, rgba(0,166,251,.18) 0%, transparent 70%);
+  top: -140px; right: -100px;
+}
+.orb-b {
+  width: 320px; height: 320px;
+  background: radial-gradient(circle, rgba(0,119,182,.14) 0%, transparent 70%);
+  bottom: -60px; left: -60px;
+  animation-delay: -6s;
+}
 
-  .panel-brand {
-    display: flex; align-items: center; gap: 10px;
-    position: relative; z-index: 2;
-    text-decoration: none;
-  }
+@keyframes drift {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(18px, -18px) scale(1.06); }
+}
 
-  .brand-icon {
-    width: 40px; height: 40px; border-radius: 10px;
-    background: linear-gradient(135deg, var(--sky), var(--sky-dark));
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; color: #fff;
-    box-shadow: 0 4px 14px rgba(14,165,233,.4);
-  }
+/* brand */
+.v-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  position: relative;
+  z-index: 2;
+}
+.v-badge {
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700; font-size: 1.1rem;
+  box-shadow: 0 8px 20px rgba(0,119,182,.32);
+}
+.v-brand-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700; font-size: 1.25rem;
+  color: #fff; letter-spacing: -.3px;
+}
 
-  .brand-text {
-    font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 800;
-    color: #fff; letter-spacing: -0.5px;
-  }
+/* main copy */
+.v-copy {
+  position: relative;
+  z-index: 2;
+}
 
-  .panel-hero { position: relative; z-index: 2; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.v-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.10);
+  border: 1px solid rgba(0,166,251,.38);
+  color: #9eddff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  margin-bottom: 26px;
+}
+.v-eyebrow-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent-2);
+  animation: pulse 2.2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: .5; transform: scale(.7); }
+}
 
-  .panel-eyebrow {
-    font-size: 0.72rem; font-weight: 600; letter-spacing: 2.5px;
-    text-transform: uppercase; color: var(--sky); margin-bottom: 16px;
-  }
+.v-headline {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(2.2rem, 3.8vw, 3.6rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -.03em;
+  color: #fff;
+  margin-bottom: 18px;
+}
+.v-headline em {
+  font-style: normal;
+  color: #79ceff;
+}
 
-  .panel-title {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(2rem, 3.5vw, 2.8rem);
-    font-weight: 700; color: #fff; line-height: 1.3;
-    letter-spacing: 0px; margin-bottom: 20px;
-  }
+.v-sub {
+  color: rgba(225,242,255,.65);
+  font-size: .96rem;
+  line-height: 1.72;
+  max-width: 380px;
+  margin-bottom: 38px;
+}
 
-  .panel-title .accent { color: var(--sky); }
+/* glass stat cards */
+.v-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.v-stat {
+  background: rgba(8,31,49,.52);
+  border: 1px solid rgba(0,166,251,.22);
+  border-radius: 14px;
+  padding: 16px;
+  backdrop-filter: blur(12px);
+  transition: border-color .25s;
+}
+.v-stat:hover { border-color: rgba(0,166,251,.5); }
+.v-stat-num {
+  display: block;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: #7ed8ff;
+  margin-bottom: 4px;
+}
+.v-stat-lbl {
+  font-size: .78rem;
+  color: rgba(222,242,255,.7);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
 
-  .panel-desc {
-    color: rgba(255,255,255,.6); font-size: 0.95rem;
-    line-height: 1.8; max-width: 380px; margin-bottom: 40px; font-weight: 400;
-  }
+/* role pills */
+.v-roles {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 24px;
+}
+.v-role-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.055);
+  border: 1px solid rgba(255,255,255,.08);
+  transition: background .2s;
+}
+.v-role-pill:hover { background: rgba(255,255,255,.09); }
+.v-role-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .95rem; flex-shrink: 0;
+}
+.ri-admin  { background: rgba(0,119,182,.3); }
+.ri-staff  { background: rgba(31,157,108,.25); }
+.ri-student{ background: rgba(251,191,36,.18); }
+.v-role-text strong { display: block; font-size: .82rem; font-weight: 700; color: #fff; }
+.v-role-text span   { font-size: .72rem; color: rgba(220,238,255,.5); }
 
-  /* Role cards */
-  .role-cards { display: flex; flex-direction: column; gap: 10px; }
+/* footer copy */
+.v-footer {
+  position: relative; z-index: 2;
+  font-size: .76rem;
+  color: rgba(255,255,255,.25);
+}
 
-  .role-card {
-    background: rgba(255,255,255,.05);
-    border: 1px solid rgba(255,255,255,.08);
-    border-radius: 12px; padding: 14px 18px;
-    display: flex; align-items: center; gap: 14px;
-    transition: background .2s;
-  }
+/* ══════════ RIGHT: FORM PANEL ════════════════════════════════════════ */
+.f-panel {
+  background: var(--card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 36px;
+  position: relative;
+  overflow-y: auto;
+}
 
-  .role-card:hover { background: rgba(255,255,255,.09); }
+/* decorative corner radial */
+.f-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 240px; height: 240px;
+  background: radial-gradient(circle at top right, rgba(0,166,251,.07), transparent 70%);
+  pointer-events: none;
+}
 
-  .role-icon {
-    width: 38px; height: 38px; border-radius: 9px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.1rem; flex-shrink: 0;
-  }
+.f-box {
+  width: 100%;
+  max-width: 400px;
+  animation: slideUp .55s cubic-bezier(.16,1,.3,1) both;
+}
 
-  .ri-admin  { background: rgba(14,165,233,.2); }
-  .ri-staff  { background: rgba(16,185,129,.2); }
-  .ri-student{ background: rgba(245,158,11,.2); }
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: none; }
+}
 
-  .role-info strong { display: block; font-size: 0.85rem; font-weight: 700; color: #fff; }
-  .role-info span   { font-size: 0.75rem; color: rgba(255,255,255,.45); }
+/* top meta */
+.f-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 36px;
+}
+.f-meta-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--ink-700);
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  transition: all .2s;
+}
+.f-meta-back:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.f-meta-reg {
+  font-size: .82rem;
+  color: var(--ink-700);
+}
+.f-meta-reg a {
+  color: var(--accent);
+  font-weight: 700;
+  text-decoration: none;
+}
+.f-meta-reg a:hover { text-decoration: underline; }
 
-  .panel-footer {
-    position: relative; z-index: 2;
-    font-size: 0.78rem; color: rgba(255,255,255,.3);
-  }
+/* heading */
+.f-heading { margin-bottom: 8px; }
+.f-pretitle {
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+.f-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--deep);
+  letter-spacing: -.03em;
+  margin-bottom: 4px;
+}
+.f-sub {
+  font-size: .88rem;
+  color: var(--ink-700);
+  margin-bottom: 28px;
+  line-height: 1.55;
+}
 
-  /* ── RIGHT PANEL ── */
-  .right-panel {
-    background: var(--surface);
-    display: flex; align-items: center; justify-content: center;
-    padding: 48px 40px;
-    position: relative;
-    overflow: hidden;
-  }
+/* error */
+.f-error {
+  background: #fff5f5;
+  border: 1.5px solid #fecdd3;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: .84rem;
+  color: #be123c;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
 
-  .right-panel::before {
-    content: '';
-    position: absolute; top: 0; right: 0;
-    width: 200px; height: 200px;
-    background: radial-gradient(circle, rgba(14,165,233,.06) 0%, transparent 70%);
-    pointer-events: none;
-  }
+/* field */
+.f-field { margin-bottom: 18px; }
 
-  .form-box {
-    width: 100%; max-width: 400px;
-    position: relative; z-index: 1;
-  }
+.f-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: .76rem;
+  font-weight: 700;
+  color: var(--ink-700);
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  margin-bottom: 7px;
+}
+.f-label a {
+  font-size: .76rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.f-label a:hover { text-decoration: underline; }
 
-  .form-eyebrow {
-    font-size: 0.72rem; font-weight: 600; letter-spacing: 2px;
-    text-transform: uppercase; color: var(--sky); margin-bottom: 8px;
-  }
+.f-input-wrap { position: relative; }
 
-  .form-title {
-    font-family: 'Syne', sans-serif; font-size: 1.9rem; font-weight: 700;
-    color: var(--ink); letter-spacing: 0px; margin-bottom: 6px;
-  }
+.f-icon {
+  position: absolute;
+  left: 14px; top: 50%; transform: translateY(-50%);
+  font-size: 1.1rem;
+  color: #a8c4d8;
+  pointer-events: none;
+  transition: color .2s;
+}
 
-  .form-sub { color: var(--muted); font-size: 0.88rem; margin-bottom: 32px; line-height: 1.6; font-weight: 400; }
+.f-input {
+  width: 100%;
+  height: 50px;
+  border: 1.5px solid var(--line);
+  border-radius: 13px;
+  padding: 0 44px 0 44px;
+  font-family: 'Manrope', sans-serif;
+  font-size: .92rem;
+  color: var(--ink-900);
+  background: #fafdff;
+  outline: none;
+  transition: border-color .2s, background .2s, box-shadow .2s;
+  -webkit-appearance: none;
+}
+.f-input::placeholder { color: #b0c8dc; }
+.f-input:focus {
+  border-color: var(--accent);
+  background: #fff;
+  box-shadow: 0 0 0 3.5px rgba(0,119,182,.10);
+}
+.f-input:focus ~ .f-icon { color: var(--accent); }
 
-  /* Error messages */
-  .alert-box {
-    background: #fff5f5; border: 1.5px solid #fecdd3;
-    border-radius: 10px; padding: 10px 14px;
-    font-size: 0.85rem; color: #be123c; font-weight: 500;
-    margin-bottom: 20px; display: flex; align-items: flex-start; gap: 8px;
-  }
+/* eye toggle */
+.f-eye {
+  position: absolute;
+  right: 13px; top: 50%; transform: translateY(-50%);
+  background: none; border: none;
+  color: #a8c4d8; cursor: pointer; font-size: 1rem;
+  padding: 0;
+  transition: color .2s;
+}
+.f-eye:hover { color: var(--accent); }
 
-  /* Field */
-  .field { margin-bottom: 18px; }
+/* remember row */
+.f-remember {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.f-remember input[type="checkbox"] {
+  width: 16px; height: 16px;
+  border-radius: 4px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.f-remember label {
+  font-size: .82rem;
+  color: var(--ink-700);
+  font-weight: 500;
+  cursor: pointer;
+}
 
-  .field label {
-    display: block; font-size: 0.78rem; font-weight: 600;
-    color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 7px;
-  }
+/* submit */
+.f-submit {
+  width: 100%;
+  height: 52px;
+  border: none;
+  border-radius: 13px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: .95rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  letter-spacing: .2px;
+  box-shadow: 0 10px 26px rgba(0,119,182,.26);
+  transition: transform .22s, box-shadow .22s;
+  margin-bottom: 18px;
+}
+.f-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px rgba(0,119,182,.34);
+}
+.f-submit:active { transform: translateY(0); }
 
-  .input-wrap { position: relative; }
+/* divider */
+.f-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.f-divider::before, .f-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--line);
+}
+.f-divider span { font-size: .75rem; color: #a0baca; font-weight: 600; white-space: nowrap; }
 
-  .input-icon {
-    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-    font-size: 1rem; color: var(--soft);
-  }
+/* trust strip */
+.f-trust {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.f-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: .75rem;
+  color: #8cafc7;
+  font-weight: 600;
+}
+.f-trust-item::before {
+  content: '✓';
+  color: var(--success);
+  font-weight: 700;
+}
 
-  .field input {
-    width: 100%; border: 1.5px solid var(--stroke); border-radius: 11px;
-    padding: 11px 14px 11px 42px;
-    font-family: 'DM Sans', sans-serif; font-size: 0.92rem; font-weight: 400;
-    color: var(--ink); background: #f8fafc; outline: none; transition: all .2s;
-  }
-
-  .field input:focus {
-    border-color: var(--sky); background: #fff;
-    box-shadow: 0 0 0 3px rgba(14,165,233,.1);
-  }
-
-  .pwd-toggle-btn {
-    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-    background: none; border: none; cursor: pointer;
-    color: var(--soft); font-size: 0.95rem; padding: 0;
-  }
-
-  /* Options row */
-  .options-row {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 24px; margin-top: -4px;
-  }
-
-  .remember-wrap { display: flex; align-items: center; gap: 7px; cursor: pointer; }
-
-  .remember-wrap input[type="checkbox"] {
-    width: 15px; height: 15px; border-radius: 4px; accent-color: var(--sky-dark); cursor: pointer;
-  }
-
-  .remember-wrap span { font-size: 0.82rem; color: var(--muted); font-weight: 400; }
-
-  .forgot-link { font-size: 0.82rem; color: var(--sky-dark); font-weight: 600; text-decoration: none; }
-  .forgot-link:hover { text-decoration: underline; }
-
-  /* Submit */
-  .btn-login {
-    width: 100%; border: none; border-radius: 11px;
-    background: linear-gradient(135deg, var(--sky), var(--sky-dark));
-    color: #fff; font-family: 'DM Sans', sans-serif;
-    font-size: 0.95rem; font-weight: 700; padding: 13px;
-    cursor: pointer; transition: all .25s;
-    box-shadow: 0 4px 16px rgba(56,189,248,.2);
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    letter-spacing: 0.2px;
-    margin-bottom: 20px;
-  }
-
-  .btn-login:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(14,165,233,.38); }
-  .btn-login:active { transform: translateY(0); }
-
-  .divider {
-    display: flex; align-items: center; gap: 12px;
-    margin-bottom: 20px;
-  }
-
-  .divider::before, .divider::after {
-    content: ''; flex: 1; height: 1px; background: var(--stroke);
-  }
-
-  .divider span { font-size: 0.75rem; color: var(--soft); font-weight: 600; white-space: nowrap; }
-
-  .register-link-box {
-    text-align: center; background: var(--bg);
-    border: 1.5px solid var(--stroke); border-radius: 11px;
-    padding: 14px; font-size: 0.85rem; color: var(--muted);
-    margin-bottom: 24px;
-  }
-
-  .register-link-box a { color: var(--sky-dark); font-weight: 700; text-decoration: none; }
-  .register-link-box a:hover { text-decoration: underline; }
-
-  .back-link {
-    display: flex; align-items: center; justify-content: center; gap: 6px;
-    font-size: 0.82rem; color: var(--soft); text-decoration: none; transition: color .2s;
-  }
-
-  .back-link:hover { color: var(--sky-dark); }
-
-  /* Animate in */
-  @keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .form-box { animation: slideUp .5s ease both; }
-  .left-panel .panel-hero { animation: slideUp .6s .1s ease both; }
-
-  @media (max-width: 768px) {
-    body { grid-template-columns: 1fr; }
-    .left-panel { display: none; }
-    .right-panel { padding: 32px 20px; }
-  }
+/* ─── RESPONSIVE ─────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .auth-shell { grid-template-columns: 1fr; }
+  .v-panel    { display: none; }
+  .f-panel    { background: #fff; }
+}
 </style>
 
-<div class="left-panel">
-  <div class="blob blob-1"></div>
-  <div class="blob blob-2"></div>
-  <div class="blob blob-3"></div>
-  <div class="grid-overlay"></div>
+<div class="auth-shell">
 
-  <a href="/" class="panel-brand">
-    <div class="brand-icon">S</div>
-    <span class="brand-text">StudentMS</span>
-  </a>
+  <!-- ══ LEFT: VISUAL PANEL ══ -->
+  <div class="v-panel">
+    <div class="orb orb-a"></div>
+    <div class="orb orb-b"></div>
 
-  <div class="panel-hero">
-    <p class="panel-eyebrow">Welcome back</p>
-    <h1 class="panel-title">Your campus,<br><span class="accent">fully connected.</span></h1>
-    <p class="panel-desc">
-      Manage attendance, results, and academic records — all in one powerful, intuitive platform built for modern institutions.
-    </p>
+    <!-- Brand -->
+    <a href="/" class="v-brand">
+      <span class="v-badge">S</span>
+      <span class="v-brand-name">StudentMS</span>
+    </a>
 
-    <div class="role-cards">
-      <div class="role-card">
-        <div class="role-icon ri-admin">🛡️</div>
-        <div class="role-info">
-          <strong>Admin</strong>
-          <span>Full institution control & oversight</span>
+    <!-- Hero copy -->
+    <div class="v-copy">
+      <div class="v-eyebrow">
+        <span class="v-eyebrow-dot"></span>
+        Campus Intelligence Platform
+      </div>
+
+      <h1 class="v-headline">
+        Design-led<br>
+        <em>Student Management</em><br>
+        for ambitious institutions.
+      </h1>
+
+      <p class="v-sub">
+        A high-performance academic workspace for attendance, grading, and reporting. Built for schools that care about clarity, speed, and a premium digital experience.
+      </p>
+
+      <!-- stats -->
+      <div class="v-stats">
+        <div class="v-stat">
+          <span class="v-stat-num">98.4%</span>
+          <span class="v-stat-lbl">Attendance Accuracy</span>
+        </div>
+        <div class="v-stat">
+          <span class="v-stat-num">4.7×</span>
+          <span class="v-stat-lbl">Faster Result Publishing</span>
+        </div>
+        <div class="v-stat">
+          <span class="v-stat-num">500+</span>
+          <span class="v-stat-lbl">Institutions Onboarded</span>
+        </div>
+        <div class="v-stat">
+          <span class="v-stat-num">99.9%</span>
+          <span class="v-stat-lbl">Platform Availability</span>
         </div>
       </div>
-      <div class="role-card">
-        <div class="role-icon ri-staff">🎓</div>
-        <div class="role-info">
-          <strong>Staff / Teacher</strong>
-          <span>Attendance, results & class management</span>
+
+      <!-- role pills -->
+      <div class="v-roles">
+        <div class="v-role-pill">
+          <div class="v-role-icon ri-admin">🛡️</div>
+          <div class="v-role-text">
+            <strong>HOD / Admin</strong>
+            <span>Full institutional control & oversight</span>
+          </div>
         </div>
-      </div>
-      <div class="role-card">
-        <div class="role-icon ri-student">📚</div>
-        <div class="role-info">
-          <strong>Student</strong>
-          <span>View grades, attendance & schedule</span>
+        <div class="v-role-pill">
+          <div class="v-role-icon ri-staff">🎓</div>
+          <div class="v-role-text">
+            <strong>Staff / Teacher</strong>
+            <span>Attendance, results & class management</span>
+          </div>
+        </div>
+        <div class="v-role-pill">
+          <div class="v-role-icon ri-student">📚</div>
+          <div class="v-role-text">
+            <strong>Student</strong>
+            <span>Grades, schedule & attendance history</span>
+          </div>
         </div>
       </div>
     </div>
+
+    <div class="v-footer">© 2025 StudentMS · All rights reserved</div>
   </div>
 
-  <div class="panel-footer">© 2025 StudentMS · All rights reserved</div>
-</div>
+  <!-- ══ RIGHT: FORM PANEL ══ -->
+  <div class="f-panel">
+    <div class="f-box">
 
-<div class="right-panel">
-  <div class="form-box">
-    <p class="form-eyebrow">Sign In</p>
-    <h2 class="form-title">Welcome back 👋</h2>
-    <p class="form-sub">Enter your credentials to access your dashboard.</p>
+      <!-- top meta row -->
+      <div class="f-meta">
+        <a href="/" class="f-meta-back">← Back to Home</a>
+        <span class="f-meta-reg">No account? <a href="{% url 'registration' %}">Sign up</a></span>
+      </div>
 
-    {% if messages %}
-      {% for message in messages %}
-        <div class="alert-box">⚠️ {{ message }}</div>
-      {% endfor %}
-    {% endif %}
+      <!-- heading -->
+      <p class="f-pretitle">Sign In</p>
+      <h2 class="f-title">Welcome back 👋</h2>
+      <p class="f-sub">Enter your credentials to access your dashboard.</p>
 
-    <form action="{% url 'doLogin' %}" method="get">
-      {% csrf_token %}
+      <!-- errors -->
+      {% if messages %}
+        {% for message in messages %}
+          <div class="f-error">⚠️ {{ message }}</div>
+        {% endfor %}
+      {% endif %}
 
-      <div class="field">
-        <label>Email Address</label>
-        <div class="input-wrap">
-          <span class="input-icon">📧</span>
-          <input type="email" name="email" placeholder="your@institution.edu" required autocomplete="email">
+      <form action="{% url 'doLogin' %}" method="get">
+        {% csrf_token %}
+
+        <!-- Email -->
+        <div class="f-field">
+          <div class="f-label">Email Address</div>
+          <div class="f-input-wrap">
+            <span class="f-icon">📧</span>
+            <input class="f-input" type="email" name="email"
+                   placeholder="name@institution.edu" required autocomplete="email">
+          </div>
         </div>
-      </div>
 
-      <div class="field">
-        <label>Password</label>
-        <div class="input-wrap">
-          <span class="input-icon">🔒</span>
-          <input type="password" name="password" id="pwd" placeholder="Enter your password" required autocomplete="current-password">
-          <button type="button" class="pwd-toggle-btn" onclick="togglePwd()">👁</button>
+        <!-- Password -->
+        <div class="f-field">
+          <div class="f-label">
+            Password
+            <a href="#">Forgot password?</a>
+          </div>
+          <div class="f-input-wrap">
+            <span class="f-icon">🔒</span>
+            <input class="f-input" type="password" name="password" id="pwd"
+                   placeholder="Enter your password" required autocomplete="current-password">
+            <button type="button" class="f-eye" onclick="togglePwd()" title="Toggle visibility">👁</button>
+          </div>
         </div>
+
+        <!-- Remember me -->
+        <div class="f-remember">
+          <input type="checkbox" id="rem" name="remember">
+          <label for="rem">Keep me signed in</label>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="f-submit">
+          Sign In to Dashboard →
+        </button>
+
+      </form>
+
+      <div class="f-divider"><span>trusted by educators everywhere</span></div>
+
+      <div class="f-trust">
+        <div class="f-trust-item">AES-256 Encrypted</div>
+        <div class="f-trust-item">GDPR Compliant</div>
+        <div class="f-trust-item">99.9% Uptime</div>
       </div>
 
-      <div class="options-row">
-        <label class="remember-wrap">
-          <input type="checkbox" name="remember">
-          <span>Remember me</span>
-        </label>
-        <a href="#" class="forgot-link">Forgot password?</a>
-      </div>
-
-      <button type="submit" class="btn-login">
-        Sign In →
-      </button>
-    </form>
-
-    <div class="divider"><span>don't have an account?</span></div>
-
-    <div class="register-link-box">
-      New to StudentMS? <a href="{% url 'registration' %}">Create an account</a>
     </div>
-
-    <a href="/" class="back-link">← Back to home</a>
   </div>
+
 </div>
 
 <script>

@@ -1,473 +1,544 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block content %}
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-  :root {
-    --navy: #0c1a2e;
-    --sky: #38bdf8;
-    --sky-dark: #0ea5e9;
-    --ink: #1e293b;
-    --muted: #64748b;
-    --soft: #94a3b8;
-    --stroke: #e2e8f0;
-    --bg: #f0f6ff;
-    --surface: #ffffff;
-    --green: #10b981;
-    --rose: #f43f5e;
-  }
+/* ─── ROOT TOKENS (exact match with home page) ───────────────────────── */
+:root {
+  --ink-900:  #102134;
+  --ink-700:  #284660;
+  --mist:     #eff6fb;
+  --line:     #d8e5f1;
+  --card:     #ffffff;
+  --accent:   #0077b6;
+  --accent-2: #00a6fb;
+  --deep:     #0f2a3f;
+  --success:  #1f9d6c;
+  --rose:     #e11d48;
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  --sky-glow:  rgba(0,166,251,.16);
+  --grid-line: rgba(181,222,247,.10);
+}
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--ink);
-    min-height: 100vh;
-  }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* NAV */
-  .top-nav {
-    background: var(--navy);
-    height: 60px; padding: 0 32px;
-    display: flex; align-items: center; justify-content: space-between;
-    position: sticky; top: 0; z-index: 100;
-  }
+html, body {
+  height: 100%;
+  font-family: 'Manrope', sans-serif;
+  color: var(--ink-900);
+  overflow: hidden;
+}
 
-  .nav-brand {
-    display: flex; align-items: center; gap: 10px; text-decoration: none;
-  }
+/* ─── SHELL ──────────────────────────────────────────────────────────── */
+.auth-shell {
+  display: grid;
+  grid-template-columns: 0.88fr 1.12fr;
+  height: 100vh;
+  background: var(--deep);
+}
 
-  .brand-icon {
-    width: 36px; height: 36px; border-radius: 9px;
-    background: linear-gradient(135deg, var(--sky), var(--sky-dark));
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; color: #fff;
-  }
+/* ══════════ LEFT: VISUAL PANEL ══════════════════════════════════════ */
+.v-panel {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 48px 52px;
 
-  .brand-text { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 700; color: #fff; }
+  background:
+    radial-gradient(circle at 18% 14%, rgba(0,119,182,.22) 0%, transparent 44%),
+    radial-gradient(circle at 80% 80%, rgba(0,166,251,.13) 0%, transparent 42%),
+    #081929;
+}
 
-  .nav-right { display: flex; align-items: center; gap: 8px; }
+.v-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 44px 44px;
+  pointer-events: none;
+}
 
-  .nav-link {
-    color: rgba(255,255,255,.65); text-decoration: none; font-size: 0.875rem;
-    font-weight: 500; padding: 6px 14px; border-radius: 8px;
-    border: 1px solid rgba(255,255,255,.12); transition: all .2s;
-  }
-  .nav-link:hover { background: rgba(255,255,255,.08); color: #fff; }
+/* animated orbs */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+  animation: drift 14s ease-in-out infinite alternate;
+}
+.orb-a {
+  width: 460px; height: 460px;
+  background: radial-gradient(circle, rgba(0,166,251,.16) 0%, transparent 70%);
+  top: -120px; left: -80px;
+}
+.orb-b {
+  width: 280px; height: 280px;
+  background: radial-gradient(circle, rgba(0,119,182,.13) 0%, transparent 70%);
+  bottom: -60px; right: -40px;
+  animation-delay: -7s;
+}
+@keyframes drift {
+  from { transform: translate(0,0) scale(1); }
+  to   { transform: translate(16px, -16px) scale(1.07); }
+}
 
-  /* PAGE LAYOUT */
-  .page-wrap {
-    max-width: 1100px; margin: 0 auto;
-    padding: 48px 24px 60px;
-    display: grid;
-    grid-template-columns: 1fr 380px;
-    gap: 32px;
-    align-items: start;
-  }
+/* brand */
+.v-brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; position: relative; z-index: 2; }
+.v-badge {
+  width: 42px; height: 42px; border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700; font-size: 1.1rem;
+  box-shadow: 0 8px 22px rgba(0,119,182,.34);
+}
+.v-brand-name { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.25rem; color: #fff; letter-spacing: -.3px; }
 
-  /* ── REGISTER FORM ── */
-  .register-card {
-    background: var(--surface);
-    border: 1px solid var(--stroke);
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0,0,0,.06);
-  }
+/* copy block */
+.v-copy { position: relative; z-index: 2; }
 
-  .card-top {
-    background: var(--navy);
-    padding: 32px 36px;
-    position: relative; overflow: hidden;
-  }
+.v-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 14px; border-radius: 999px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(0,166,251,.35);
+  color: #9eddff;
+  font-size: .7rem; font-weight: 700;
+  letter-spacing: 1.8px; text-transform: uppercase;
+  margin-bottom: 22px;
+}
+.v-eyebrow-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent-2);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:.45; transform:scale(.65); } }
 
-  .card-top::before {
-    content: '';
-    position: absolute; top: -60px; right: -40px;
-    width: 200px; height: 200px;
-    background: radial-gradient(circle, rgba(56,189,248,.2) 0%, transparent 70%);
-    border-radius: 50%;
-  }
+.v-headline {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(1.9rem, 3.2vw, 3rem);
+  font-weight: 700; line-height: 1.06; letter-spacing: -.03em;
+  color: #fff; margin-bottom: 14px;
+}
+.v-headline em { font-style: normal; color: #79ceff; }
 
-  .card-top-inner { position: relative; z-index: 1; }
+.v-sub {
+  color: rgba(225,242,255,.6);
+  font-size: .9rem; line-height: 1.7;
+  max-width: 340px; margin-bottom: 30px;
+}
 
-  .step-indicator {
-    display: flex; gap: 6px; margin-bottom: 16px;
-  }
+/* progress steps */
+.v-steps { display: flex; flex-direction: column; gap: 0; }
 
-  .step-dot {
-    height: 4px; border-radius: 4px; background: rgba(255,255,255,.2);
-  }
+.v-step {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(8,31,49,.5);
+  border: 1px solid rgba(0,166,251,.16);
+  position: relative;
+  margin-bottom: 8px;
+  backdrop-filter: blur(10px);
+  transition: border-color .25s;
+}
+.v-step:hover { border-color: rgba(0,166,251,.42); }
 
-  .step-dot.active { background: var(--sky); flex: 2; }
-  .step-dot { flex: 1; }
+.v-step-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; flex-shrink: 0;
+}
+.si-a { background: rgba(0,119,182,.25); }
+.si-b { background: rgba(31,157,108,.2); }
+.si-c { background: rgba(0,166,251,.2); }
+.si-d { background: rgba(251,191,36,.15); }
 
-  .card-top-eyebrow {
-    font-size: 0.72rem; font-weight: 600; letter-spacing: 2px;
-    text-transform: uppercase; color: var(--sky); margin-bottom: 8px;
-  }
+.v-step-text strong { display: block; font-size: .83rem; font-weight: 700; color: #fff; margin-bottom: 2px; }
+.v-step-text span   { font-size: .74rem; color: rgba(200,228,255,.55); }
 
-  .card-top-title {
-    font-family: 'Syne', sans-serif; font-size: 1.7rem; font-weight: 700;
-    color: #fff; letter-spacing: 0px; margin-bottom: 4px;
-  }
+/* footer */
+.v-footer { position: relative; z-index: 2; font-size: .74rem; color: rgba(255,255,255,.22); }
 
-  .card-top-sub { color: rgba(255,255,255,.5); font-size: 0.88rem; }
+/* ══════════ RIGHT: FORM PANEL ════════════════════════════════════════ */
+.f-panel {
+  background: var(--card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 32px;
+  overflow-y: auto;
+  position: relative;
+}
 
-  .card-body { padding: 32px 36px; }
+.f-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 260px; height: 260px;
+  background: radial-gradient(circle at top right, rgba(0,166,251,.06), transparent 70%);
+  pointer-events: none;
+}
 
-  .alert-box {
-    background: #fff5f5; border: 1.5px solid #fecdd3;
-    border-radius: 10px; padding: 10px 14px;
-    font-size: 0.85rem; color: #be123c; font-weight: 500;
-    margin-bottom: 20px;
-  }
+.f-box {
+  width: 100%; max-width: 500px;
+  animation: slideUp .55s cubic-bezier(.16,1,.3,1) both;
+}
 
-  /* Section dividers */
-  .section-divider {
-    font-size: 0.72rem; font-weight: 700; letter-spacing: 1.5px;
-    text-transform: uppercase; color: var(--soft);
-    margin: 0 0 16px; padding-bottom: 10px;
-    border-bottom: 1px solid var(--stroke);
-    display: flex; align-items: center; gap: 8px;
-  }
+@keyframes slideUp {
+  from { opacity:0; transform:translateY(22px); }
+  to   { opacity:1; transform:none; }
+}
 
-  /* Fields */
-  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
-  .field-full { margin-bottom: 14px; }
+/* top meta */
+.f-meta {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 28px;
+}
+.f-meta-back {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: .8rem; font-weight: 600;
+  color: var(--ink-700); text-decoration: none;
+  padding: 6px 12px; border-radius: 8px;
+  border: 1px solid var(--line); transition: all .2s;
+}
+.f-meta-back:hover { border-color: var(--accent); color: var(--accent); }
+.f-meta-login { font-size: .8rem; color: var(--ink-700); }
+.f-meta-login a { color: var(--accent); font-weight: 700; text-decoration: none; }
+.f-meta-login a:hover { text-decoration: underline; }
 
-  .field label {
-    display: block; font-size: 0.78rem; font-weight: 600;
-    color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;
-  }
+/* progress indicator */
+.f-progress {
+  display: flex; align-items: center; gap: 6px;
+  margin-bottom: 20px;
+}
+.f-prog-step {
+  height: 4px; border-radius: 4px;
+  flex: 1; background: var(--line); transition: background .35s;
+}
+.f-prog-step.active { background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
 
-  .input-wrap { position: relative; }
+/* heading */
+.f-pretitle { font-size: .7rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 5px; }
+.f-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.75rem; font-weight: 700; color: var(--deep); letter-spacing: -.03em; margin-bottom: 3px; }
+.f-sub { font-size: .86rem; color: var(--ink-700); margin-bottom: 22px; line-height: 1.5; }
 
-  .input-icon {
-    position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
-    font-size: 0.95rem; color: var(--soft);
-  }
+/* section title inside form */
+.f-section-label {
+  font-size: .68rem; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; color: #8cb2ca;
+  margin: 16px 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; gap: 8px;
+}
 
-  .field input {
-    width: 100%; border: 1.5px solid var(--stroke); border-radius: 11px;
-    padding: 10px 14px 10px 40px;
-    font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
-    color: var(--ink); background: #f8fafc; outline: none; transition: all .2s;
-  }
+/* errors */
+.f-error {
+  background: #fff5f5; border: 1.5px solid #fecdd3;
+  border-radius: 12px; padding: 10px 14px;
+  font-size: .83rem; color: #be123c; font-weight: 500;
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 16px;
+}
 
-  .field input:focus {
-    border-color: var(--sky); background: #fff;
-    box-shadow: 0 0 0 3px rgba(14,165,233,.1);
-  }
+/* grid */
+.f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.f-row-3 { grid-template-columns: 1fr 1fr 1fr; }
 
-  .field input.valid   { border-color: var(--green); }
-  .field input.invalid { border-color: var(--rose); }
+/* field */
+.f-field { margin-bottom: 12px; }
 
-  .field-hint { font-size: 0.75rem; color: var(--soft); margin-top: 5px; }
+.f-label {
+  display: block; font-size: .73rem; font-weight: 700;
+  color: var(--ink-700); text-transform: uppercase; letter-spacing: .6px;
+  margin-bottom: 5px;
+}
 
-  /* Password strength */
-  .strength-row { display: flex; gap: 3px; margin-top: 7px; }
-  .str-seg { height: 3px; flex: 1; border-radius: 3px; background: var(--stroke); transition: background .3s; }
-  .str-seg.weak   { background: var(--rose); }
-  .str-seg.med    { background: #f59e0b; }
-  .str-seg.strong { background: var(--green); }
-  .str-text { font-size: 0.72rem; margin-top: 4px; font-weight: 600; }
+.f-input-wrap { position: relative; }
 
-  .pwd-toggle-btn {
-    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-    background: none; border: none; cursor: pointer; color: var(--soft); font-size: 0.95rem;
-  }
+.f-icon {
+  position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+  font-size: .98rem; color: #a8c4d8; pointer-events: none;
+  transition: color .2s;
+}
 
-  /* Terms */
-  .terms-row {
-    display: flex; align-items: flex-start; gap: 10px;
-    margin: 20px 0 24px; font-size: 0.82rem; color: var(--muted); line-height: 1.5;
-  }
+.f-input, .f-select {
+  width: 100%;
+  height: 46px;
+  border: 1.5px solid var(--line); border-radius: 12px;
+  padding: 0 14px 0 40px;
+  font-family: 'Manrope', sans-serif; font-size: .88rem;
+  color: var(--ink-900); background: #fafdff;
+  outline: none; transition: border-color .2s, box-shadow .2s, background .2s;
+  -webkit-appearance: none;
+}
+.f-input::placeholder { color: #b0c8dc; }
+.f-input:focus, .f-select:focus {
+  border-color: var(--accent); background: #fff;
+  box-shadow: 0 0 0 3.5px rgba(0,119,182,.09);
+}
+.f-input:focus ~ .f-icon { color: var(--accent); }
+.f-input.valid   { border-color: var(--success); }
+.f-input.invalid { border-color: var(--rose); }
 
-  .terms-row input { width: 15px; height: 15px; margin-top: 2px; accent-color: var(--sky-dark); flex-shrink: 0; }
-  .terms-row a { color: var(--sky-dark); text-decoration: none; font-weight: 600; }
-  .terms-row a:hover { text-decoration: underline; }
+/* select arrow */
+.f-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23a8c4d8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L2 5h12z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+  cursor: pointer;
+}
+.f-select option { color: var(--ink-900); background: #fff; }
 
-  /* Submit */
-  .btn-register {
-    width: 100%; border: none; border-radius: 11px;
-    background: linear-gradient(135deg, var(--sky), var(--sky-dark));
-    color: #fff; font-family: 'DM Sans', sans-serif;
-    font-size: 0.95rem; font-weight: 700; padding: 13px;
-    cursor: pointer; transition: all .25s;
-    box-shadow: 0 6px 20px rgba(14,165,233,.3);
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    margin-bottom: 16px;
-  }
+/* eye toggle */
+.f-eye {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: #a8c4d8; cursor: pointer;
+  font-size: .95rem; padding: 0; transition: color .2s;
+}
+.f-eye:hover { color: var(--accent); }
 
-  .btn-register:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(14,165,233,.38); }
+/* password strength */
+.f-str-bars { display: flex; gap: 3px; margin-top: 6px; }
+.f-str-seg { height: 3px; flex: 1; border-radius: 3px; background: var(--line); transition: background .3s; }
+.f-str-seg.w { background: var(--rose); }
+.f-str-seg.m { background: #f59e0b; }
+.f-str-seg.s { background: var(--success); }
+.f-str-txt { font-size: .7rem; margin-top: 4px; font-weight: 600; color: #8cafc7; }
 
-  .login-link {
-    text-align: center; font-size: 0.85rem; color: var(--muted);
-  }
+/* match hint */
+.f-hint { font-size: .72rem; margin-top: 4px; font-weight: 600; }
+.f-hint.ok  { color: var(--success); }
+.f-hint.err { color: var(--rose); }
 
-  .login-link a { color: var(--sky-dark); font-weight: 700; text-decoration: none; }
-  .login-link a:hover { text-decoration: underline; }
+/* terms */
+.f-terms {
+  display: flex; align-items: flex-start; gap: 9px;
+  margin: 14px 0 20px; font-size: .8rem; color: var(--ink-700); line-height: 1.5;
+}
+.f-terms input { width: 15px; height: 15px; margin-top: 1px; accent-color: var(--accent); flex-shrink: 0; }
+.f-terms a { color: var(--accent); text-decoration: none; font-weight: 600; }
+.f-terms a:hover { text-decoration: underline; }
 
-  /* ── SIDEBAR ── */
-  .sidebar { display: flex; flex-direction: column; gap: 16px; }
+/* submit */
+.f-submit {
+  width: 100%; height: 50px; border: none; border-radius: 13px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+  color: #fff; font-family: 'Space Grotesk', sans-serif;
+  font-size: .92rem; font-weight: 700; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  letter-spacing: .2px;
+  box-shadow: 0 10px 26px rgba(0,119,182,.24);
+  transition: transform .22s, box-shadow .22s;
+  margin-bottom: 14px;
+}
+.f-submit:hover { transform: translateY(-2px); box-shadow: 0 16px 32px rgba(0,119,182,.34); }
+.f-submit:active { transform: translateY(0); }
 
-  .info-panel {
-    background: var(--surface);
-    border: 1px solid var(--stroke);
-    border-radius: 16px; padding: 22px;
-    box-shadow: 0 4px 14px rgba(0,0,0,.04);
-  }
+/* trust strip */
+.f-trust { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; }
+.f-trust-item { display: flex; align-items: center; gap: 5px; font-size: .73rem; color: #8cafc7; font-weight: 600; }
+.f-trust-item::before { content: '✓'; color: var(--success); font-weight: 700; }
 
-  .info-panel-title {
-    font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700;
-    color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px;
-  }
-
-  .perk-item {
-    display: flex; gap: 12px; padding: 10px 0;
-    border-bottom: 1px solid var(--stroke);
-  }
-
-  .perk-item:last-child { border-bottom: none; }
-
-  .perk-icon {
-    width: 34px; height: 34px; border-radius: 8px;
-    display: flex; align-items: center; justify-content: center; font-size: 1rem;
-    flex-shrink: 0;
-  }
-
-  .perk-icon.blue  { background: #e0f2fe; }
-  .perk-icon.green { background: #d1fae5; }
-  .perk-icon.amber { background: #fef3c7; }
-
-  .perk-text strong { display: block; font-size: 0.85rem; font-weight: 700; color: var(--ink); }
-  .perk-text span   { font-size: 0.78rem; color: var(--soft); }
-
-  /* Testimonial */
-  .testi-panel {
-    background: var(--navy);
-    border-radius: 16px; padding: 24px;
-    position: relative; overflow: hidden;
-  }
-
-  .testi-panel::before {
-    content: '';
-    position: absolute; bottom: -40px; right: -40px;
-    width: 150px; height: 150px;
-    background: radial-gradient(circle, rgba(14,165,233,.2) 0%, transparent 70%);
-    border-radius: 50%;
-  }
-
-  .testi-quote {
-    font-size: 0.92rem; color: rgba(255,255,255,.75);
-    line-height: 1.65; font-style: italic; margin-bottom: 16px;
-    position: relative; z-index: 1;
-  }
-
-  .testi-quote::before { content: '"'; font-size: 2.5rem; color: var(--sky); line-height: 0; vertical-align: -10px; margin-right: 4px; }
-
-  .testi-author {
-    display: flex; align-items: center; gap: 10px;
-    position: relative; z-index: 1;
-  }
-
-  .testi-avatar {
-    width: 36px; height: 36px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--sky), var(--sky-dark));
-    display: flex; align-items: center; justify-content: center;
-    color: #fff; font-weight: 700; font-size: 0.8rem;
-  }
-
-  .testi-name { font-size: 0.85rem; font-weight: 700; color: #fff; }
-  .testi-role { font-size: 0.75rem; color: rgba(255,255,255,.45); }
-
-  .stars { color: #f59e0b; font-size: 0.8rem; letter-spacing: 1px; margin-bottom: 10px; }
-
-  @keyframes slideUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .register-card { animation: slideUp .5s ease both; }
-  .sidebar { animation: slideUp .5s .1s ease both; }
-
-  @media (max-width: 900px) {
-    .page-wrap { grid-template-columns: 1fr; }
-    .sidebar { display: none; }
-  }
-
-  @media (max-width: 480px) {
-    .field-row { grid-template-columns: 1fr; }
-    .card-body { padding: 24px 20px; }
-    .card-top  { padding: 24px 20px; }
-  }
+/* ─── RESPONSIVE ─────────────────────────────────────────────────────── */
+@media (max-width: 960px) {
+  .auth-shell { grid-template-columns: 1fr; }
+  .v-panel    { display: none; }
+  .f-panel    { background: #fff; }
+}
+@media (max-width: 500px) {
+  .f-row { grid-template-columns: 1fr; }
+  .f-panel { padding: 20px 16px; }
+}
 </style>
 
-<!-- NAV -->
-<nav class="top-nav">
-  <a href="/" class="nav-brand">
-    <div class="brand-icon">S</div>
-    <span class="brand-text">StudentMS</span>
-  </a>
-  <div class="nav-right">
-    <a href="{% url 'login' %}" class="nav-link">Login</a>
-    <a href="{% url 'contact' %}" class="nav-link">Contact</a>
-  </div>
-</nav>
+<div class="auth-shell">
 
-<div class="page-wrap">
+  <!-- ══ LEFT: VISUAL ══ -->
+  <div class="v-panel">
+    <div class="orb orb-a"></div>
+    <div class="orb orb-b"></div>
 
-  <!-- REGISTER FORM -->
-  <div class="register-card">
-    <div class="card-top">
-      <div class="card-top-inner">
-        <div class="step-indicator">
-          <div class="step-dot active"></div>
-          <div class="step-dot"></div>
-          <div class="step-dot"></div>
+    <a href="/" class="v-brand">
+      <span class="v-badge">S</span>
+      <span class="v-brand-name">StudentMS</span>
+    </a>
+
+    <div class="v-copy">
+      <div class="v-eyebrow"><span class="v-eyebrow-dot"></span> Campus Intelligence Platform</div>
+
+      <h2 class="v-headline">
+        Start Your<br>
+        <em>Academic Journey</em><br>
+        Today.
+      </h2>
+
+      <p class="v-sub">
+        Join thousands of educators and students in a streamlined digital environment purpose-built for institutional excellence.
+      </p>
+
+      <!-- What you get -->
+      <div class="v-steps">
+        <div class="v-step">
+          <div class="v-step-icon si-a">📋</div>
+          <div class="v-step-text">
+            <strong>Attendance Intelligence</strong>
+            <span>Daily tracking, pattern analysis, automated reports</span>
+          </div>
         </div>
-        <p class="card-top-eyebrow">New Account</p>
-        <h2 class="card-top-title">Create Your Account</h2>
-        <p class="card-top-sub">Join thousands of educators and students on StudentMS.</p>
+        <div class="v-step">
+          <div class="v-step-icon si-b">📊</div>
+          <div class="v-step-text">
+            <strong>Result Management</strong>
+            <span>Auto GPA, grade publishing, instant transcripts</span>
+          </div>
+        </div>
+        <div class="v-step">
+          <div class="v-step-icon si-c">🔔</div>
+          <div class="v-step-text">
+            <strong>Smart Notifications</strong>
+            <span>Exam alerts, absence flags, result broadcasts</span>
+          </div>
+        </div>
+        <div class="v-step">
+          <div class="v-step-icon si-d">📈</div>
+          <div class="v-step-text">
+            <strong>Analytics Layer</strong>
+            <span>Visual dashboards for operational confidence</span>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="card-body">
+    <div class="v-footer">© 2025 StudentMS · All rights reserved</div>
+  </div>
+
+  <!-- ══ RIGHT: FORM ══ -->
+  <div class="f-panel">
+    <div class="f-box">
+
+      <!-- meta row -->
+      <div class="f-meta">
+        <a href="/" class="f-meta-back">← Home</a>
+        <span class="f-meta-login">Have an account? <a href="{% url 'login' %}">Sign in</a></span>
+      </div>
+
+      <!-- progress bar (3 dots = 3 conceptual steps) -->
+      <div class="f-progress">
+        <div class="f-prog-step active"></div>
+        <div class="f-prog-step active"></div>
+        <div class="f-prog-step"></div>
+      </div>
+
+      <p class="f-pretitle">New Account</p>
+      <h2 class="f-title">Create Your Account</h2>
+      <p class="f-sub">Join StudentMS — the campus intelligence platform trusted by 500+ institutions.</p>
 
       {% if messages %}
         {% for message in messages %}
-          <div class="alert-box">⚠️ {{ message }}</div>
+          <div class="f-error">⚠️ {{ message }}</div>
         {% endfor %}
       {% endif %}
 
       <form action="{% url 'doRegistration' %}" method="get">
         {% csrf_token %}
 
-        <div class="section-divider">👤 Personal Details</div>
+        <!-- Personal Details -->
+        <div class="f-section-label">👤 Personal Details</div>
 
-        <div class="field-row">
-          <div class="field">
-            <label>First Name</label>
-            <div class="input-wrap">
-              <span class="input-icon">✏️</span>
-              <input type="text" name="first_name" placeholder="First name" required autocomplete="given-name" oninput="validateName(this)">
+        <div class="f-row">
+          <div class="f-field">
+            <label class="f-label">First Name</label>
+            <div class="f-input-wrap">
+              <span class="f-icon">✏️</span>
+              <input class="f-input" type="text" name="first_name"
+                     placeholder="First name" required autocomplete="given-name"
+                     oninput="validateName(this)">
             </div>
           </div>
-          <div class="field">
-            <label>Last Name</label>
-            <div class="input-wrap">
-              <span class="input-icon">✏️</span>
-              <input type="text" name="last_name" placeholder="Last name" required autocomplete="family-name" oninput="validateName(this)">
+          <div class="f-field">
+            <label class="f-label">Last Name</label>
+            <div class="f-input-wrap">
+              <span class="f-icon">✏️</span>
+              <input class="f-input" type="text" name="last_name"
+                     placeholder="Last name" required autocomplete="family-name"
+                     oninput="validateName(this)">
             </div>
           </div>
         </div>
 
-        <div class="field-full field">
-          <label>Institutional Email</label>
-          <div class="input-wrap">
-            <span class="input-icon">📧</span>
-            <input type="email" name="email" placeholder="name@institution.edu" required autocomplete="email" oninput="validateEmail(this)">
-          </div>
-          <div class="field-hint">Use your official institution email address.</div>
-        </div>
-
-        <div class="section-divider" style="margin-top:24px;">🔒 Security</div>
-
-        <div class="field-row">
-          <div class="field">
-            <label>Password</label>
-            <div class="input-wrap">
-              <span class="input-icon">🔑</span>
-              <input type="password" name="password" id="pwd1" placeholder="Create password" required oninput="checkStrength(this.value); matchPwd()">
-              <button type="button" class="pwd-toggle-btn" onclick="togglePwd('pwd1')">👁</button>
-            </div>
-            <div class="strength-row">
-              <div class="str-seg" id="s1"></div>
-              <div class="str-seg" id="s2"></div>
-              <div class="str-seg" id="s3"></div>
-              <div class="str-seg" id="s4"></div>
-            </div>
-            <div class="str-text" id="str-text" style="color:var(--soft);"></div>
-          </div>
-          <div class="field">
-            <label>Confirm Password</label>
-            <div class="input-wrap">
-              <span class="input-icon">🔑</span>
-              <input type="password" name="confirmPassword" id="pwd2" placeholder="Confirm password" required oninput="matchPwd()">
-              <button type="button" class="pwd-toggle-btn" onclick="togglePwd('pwd2')">👁</button>
-            </div>
-            <div class="field-hint" id="match-hint"></div>
+        <div class="f-field">
+          <label class="f-label">Institutional Email</label>
+          <div class="f-input-wrap">
+            <span class="f-icon">📧</span>
+            <input class="f-input" type="email" name="email"
+                   placeholder="name@institution.edu" required autocomplete="email"
+                   oninput="validateEmail(this)">
           </div>
         </div>
 
-        <label class="terms-row">
+        <!-- Security -->
+        <div class="f-section-label">🔒 Security</div>
+
+        <div class="f-row">
+          <div class="f-field">
+            <label class="f-label">Password</label>
+            <div class="f-input-wrap">
+              <span class="f-icon">🔑</span>
+              <input class="f-input" type="password" name="password" id="pwd1"
+                     placeholder="Create password" required
+                     oninput="checkStrength(this.value); matchPwd()">
+              <button type="button" class="f-eye" onclick="togglePwd('pwd1')">👁</button>
+            </div>
+            <div class="f-str-bars">
+              <div class="f-str-seg" id="s1"></div>
+              <div class="f-str-seg" id="s2"></div>
+              <div class="f-str-seg" id="s3"></div>
+              <div class="f-str-seg" id="s4"></div>
+            </div>
+            <div class="f-str-txt" id="str-txt"></div>
+          </div>
+          <div class="f-field">
+            <label class="f-label">Confirm Password</label>
+            <div class="f-input-wrap">
+              <span class="f-icon">🔑</span>
+              <input class="f-input" type="password" name="confirmPassword" id="pwd2"
+                     placeholder="Confirm password" required
+                     oninput="matchPwd()">
+              <button type="button" class="f-eye" onclick="togglePwd('pwd2')">👁</button>
+            </div>
+            <div class="f-hint" id="match-hint"></div>
+          </div>
+        </div>
+
+        <!-- Terms -->
+        <label class="f-terms">
           <input type="checkbox" required>
           I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a> of StudentMS.
         </label>
 
-        <button type="submit" class="btn-register">
+        <!-- Submit -->
+        <button type="submit" class="f-submit">
           Create Account →
         </button>
 
-        <p class="login-link">Already registered? <a href="{% url 'login' %}">Sign in instead</a></p>
+        <div class="f-trust">
+          <div class="f-trust-item">AES-256 Encrypted</div>
+          <div class="f-trust-item">GDPR Compliant</div>
+          <div class="f-trust-item">99.9% Uptime</div>
+        </div>
+
       </form>
-    </div>
-  </div>
-
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <div class="info-panel">
-      <div class="info-panel-title">✨ What you get</div>
-      <div class="perk-item">
-        <div class="perk-icon blue">📋</div>
-        <div class="perk-text">
-          <strong>Attendance Tracking</strong>
-          <span>Digital registers, real-time records</span>
-        </div>
-      </div>
-      <div class="perk-item">
-        <div class="perk-icon green">📊</div>
-        <div class="perk-text">
-          <strong>Result Management</strong>
-          <span>Auto GPA, instant report cards</span>
-        </div>
-      </div>
-      <div class="perk-item">
-        <div class="perk-icon amber">🔔</div>
-        <div class="perk-text">
-          <strong>Smart Notifications</strong>
-          <span>Alerts for exams, absences & more</span>
-        </div>
-      </div>
-      <div class="perk-item">
-        <div class="perk-icon blue">🔒</div>
-        <div class="perk-text">
-          <strong>Secure & Private</strong>
-          <span>AES-256 encryption, GDPR ready</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="testi-panel">
-      <div class="stars">★★★★★</div>
-      <p class="testi-quote">StudentMS transformed how our school handles attendance and results. Setup took under 10 minutes and the whole staff was on board by day one.</p>
-      <div class="testi-author">
-        <div class="testi-avatar">RK</div>
-        <div>
-          <div class="testi-name">Rakibul Karim</div>
-          <div class="testi-role">Principal, Dhaka Model School</div>
-        </div>
-      </div>
-    </div>
-
-    <div style="background:var(--surface);border:1px solid var(--stroke);border-radius:14px;padding:18px;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.04);">
-      <div style="font-size:1.6rem;margin-bottom:8px;">🎓</div>
-      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;color:var(--ink);margin-bottom:4px;">Trusted by 500+ institutions</div>
-      <div style="font-size:0.8rem;color:var(--soft);">Join 200,000+ students already using StudentMS</div>
     </div>
   </div>
 
@@ -481,50 +552,49 @@
 
   function checkStrength(val) {
     const segs = ['s1','s2','s3','s4'].map(id => document.getElementById(id));
-    const txt = document.getElementById('str-text');
-    segs.forEach(s => s.className = 'str-seg');
+    const txt  = document.getElementById('str-txt');
+    segs.forEach(s => s.className = 'f-str-seg');
     if (!val) { txt.textContent = ''; return; }
     let score = 0;
-    if (val.length >= 8) score++;
-    if (/[A-Z]/.test(val)) score++;
-    if (/[0-9]/.test(val)) score++;
+    if (val.length >= 8)          score++;
+    if (/[A-Z]/.test(val))        score++;
+    if (/[0-9]/.test(val))        score++;
     if (/[^A-Za-z0-9]/.test(val)) score++;
-    const cls = ['','weak','med','med','strong'];
-    const lbls = ['','Weak','Fair','Good','Strong ✓'];
-    const cols = ['','#f43f5e','#f59e0b','#f59e0b','#10b981'];
+    const cls  = ['','w','m','m','s'];
+    const lbls = ['','Weak — add uppercase & numbers','Fair — add a special character','Good — almost there!','Strong ✓'];
+    const cols = ['','#e11d48','#f59e0b','#f59e0b','#1f9d6c'];
     for (let i = 0; i < score; i++) segs[i].classList.add(cls[score]);
-    txt.textContent = lbls[score];
-    txt.style.color = cols[score];
+    txt.textContent  = lbls[score];
+    txt.style.color  = cols[score];
   }
 
   function matchPwd() {
-    const p1 = document.getElementById('pwd1').value;
-    const p2 = document.getElementById('pwd2').value;
+    const p1   = document.getElementById('pwd1').value;
+    const p2   = document.getElementById('pwd2').value;
     const hint = document.getElementById('match-hint');
-    if (!p2) { hint.textContent = ''; return; }
+    const inp  = document.getElementById('pwd2');
+    if (!p2) { hint.textContent = ''; inp.className = 'f-input'; return; }
     if (p1 === p2) {
       hint.textContent = '✓ Passwords match';
-      hint.style.color = '#10b981';
-      document.getElementById('pwd2').classList.remove('invalid');
-      document.getElementById('pwd2').classList.add('valid');
+      hint.className   = 'f-hint ok';
+      inp.classList.add('valid'); inp.classList.remove('invalid');
     } else {
       hint.textContent = '✗ Passwords do not match';
-      hint.style.color = '#f43f5e';
-      document.getElementById('pwd2').classList.add('invalid');
-      document.getElementById('pwd2').classList.remove('valid');
+      hint.className   = 'f-hint err';
+      inp.classList.add('invalid'); inp.classList.remove('valid');
     }
   }
 
   function validateEmail(el) {
-    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value);
-    el.classList.toggle('valid', valid);
-    el.classList.toggle('invalid', !valid && el.value.length > 4);
+    const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value);
+    el.classList.toggle('valid',   ok);
+    el.classList.toggle('invalid', !ok && el.value.length > 4);
   }
 
   function validateName(el) {
-    const valid = el.value.trim().length >= 2;
-    el.classList.toggle('valid', valid);
-    el.classList.toggle('invalid', !valid && el.value.length > 0);
+    const ok = el.value.trim().length >= 2;
+    el.classList.toggle('valid',   ok);
+    el.classList.toggle('invalid', !ok && el.value.length > 0);
   }
 </script>
 

@@ -503,10 +503,95 @@
     flex-wrap: wrap;
   }
 
-  .footer-links a {
-    color: #456583;
-    font-weight: 600;
-    font-size: 0.88rem;
+  .footer-links a:hover {
+    color: var(--accent);
+  }
+
+  /* FAQ Styles */
+  .faq {
+    padding: 80px 0;
+    background: #fff;
+  }
+  .faq-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    margin-top: 40px;
+  }
+  .faq-item {
+    padding: 24px;
+    border-radius: 16px;
+    background: #f8fbff;
+    border: 1px solid #e1eef9;
+    transition: 0.3s ease;
+  }
+  .faq-item:hover {
+    border-color: var(--accent);
+    background: #fff;
+    box-shadow: 0 12px 24px rgba(0,119,182,0.06);
+  }
+  .faq-item h4 {
+    margin: 0 0 12px;
+    font-family: 'Space Grotesk', sans-serif;
+    color: var(--deep);
+    font-size: 1.1rem;
+  }
+  .faq-item p {
+    margin: 0;
+    color: #5b7590;
+    font-size: 0.94rem;
+    line-height: 1.6;
+  }
+
+  /* Enhanced Footer */
+  .footer-v2 {
+    padding: 80px 0 40px;
+    background: var(--deep);
+    color: #fff;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+    gap: 40px;
+    margin-bottom: 60px;
+  }
+  .footer-col h5 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.1rem;
+    margin: 0 0 20px;
+    color: #79ceff;
+  }
+  .footer-col p {
+    color: rgba(255,255,255,0.7);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+  .footer-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .footer-nav li {
+    margin-bottom: 12px;
+  }
+  .footer-nav a {
+    color: rgba(255,255,255,0.7);
+    transition: 0.2s;
+    font-size: 0.9rem;
+  }
+  .footer-nav a:hover {
+    color: #fff;
+    padding-left: 5px;
+  }
+  .footer-bottom {
+    padding-top: 30px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: rgba(255,255,255,0.5);
+    font-size: 0.85rem;
   }
 
   .reveal {
@@ -684,15 +769,79 @@
   </div>
 </section>
 
-<footer class="footer">
-  <div class="frame footer-row">
-    <div>
-      <strong>StudentMS</strong> - A design-first platform for modern institutions.
+<section id="faq" class="faq">
+  <div class="frame">
+    <div class="section-head reveal">
+      <span class="tag">Common Queries</span>
+      <h2>Frequently Asked Questions</h2>
+      <p>Answers to some of the common questions about our platform and onboarding process.</p>
     </div>
-    <div class="footer-links">
-      <a href="/contact">Contact</a>
-      <a href="/login">Login</a>
-      <a href="/registration">Register</a>
+    <div class="faq-grid">
+      <div class="faq-item reveal">
+        <h4>How easy is it to set up?</h4>
+        <p>Extremely. Our platform comes with pre-defined structures and role-based onboarding that simplifies setup from hours to just minutes.</p>
+      </div>
+      <div class="faq-item reveal">
+        <h4>Can we customize our modules?</h4>
+        <p>Definitely. You can tailor modules for attendance tracking, result management, and administrative workflows according to your institution's custom needs.</p>
+      </div>
+      <div class="faq-item reveal">
+        <h4>Is student data secure?</h4>
+        <p>Yes. Data security is our top priority. We use industry-standard encryption protocols and secure database systems to protect all student and staff information.</p>
+      </div>
+      <div class="faq-item reveal">
+        <h4>Who can access the platform?</h4>
+        <p>We provide exclusive access to three primary roles: HOD (Admin), Staff (Teachers), and Students, each with their own specialized dashboards and permission levels.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer-v2">
+  <div class="frame">
+    <div class="footer-grid">
+      <div class="footer-col reveal">
+        <a class="brand" href="/" style="color: #fff; margin-bottom: 24px;">
+          <span class="brand-badge">S</span>
+          <span>StudentMS</span>
+        </a>
+        <p>
+          StudentMS is a premium, design-first student management platform focused on improving institutional efficiency through technology and clarity.
+        </p>
+      </div>
+      <div class="footer-col reveal">
+        <h5>Quick Links</h5>
+        <ul class="footer-nav">
+          <li><a href="#features">Key Features</a></li>
+          <li><a href="#metrics">Platform Outcomes</a></li>
+          <li><a href="#workflow">Onboarding Flow</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col reveal">
+        <h5>Our Platforms</h5>
+        <ul class="footer-nav">
+          <li><a href="/login">HOD Dashboard</a></li>
+          <li><a href="/login">Staff Portal</a></li>
+          <li><a href="/login">Student Hub</a></li>
+          <li><a href="/contact">Support Center</a></li>
+        </ul>
+      </div>
+      <div class="footer-col reveal">
+        <h5>Connect with Us</h5>
+        <p>
+          Plot #12, Tech Avenue,<br>
+          Silicon Valley 94043,<br>
+          contact@studentms.io
+        </p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 StudentMS Platform. All rights reserved.</span>
+      <div class="footer-links">
+        <a href="/contact" style="color: rgba(255,255,255,0.5);">Privacy</a>
+        <a href="/contact" style="color: rgba(255,255,255,0.5);">Terms</a>
+      </div>
     </div>
   </div>
 </footer>
