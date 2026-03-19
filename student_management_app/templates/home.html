@@ -1,984 +1,741 @@
 {% extends 'base.html' %}
-{% load static %}
-
 {% block content %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
   :root {
-    --navy: #0c1a2e;
-    --navy-mid: #0f2035;
-    --sky: #38bdf8;
-    --sky-dark: #0ea5e9;
-    --sky-deeper: #0284c7;
-    --ink: #1e293b;
-    --muted: #64748b;
-    --soft: #94a3b8;
-    --stroke: #e2e8f0;
-    --bg: #f0f6ff;
-    --surface: #ffffff;
-    --green: #10b981;
-    --amber: #f59e0b;
-    --rose: #f43f5e;
+    --ink-900: #102134;
+    --ink-700: #284660;
+    --mist: #eff6fb;
+    --line: #d8e5f1;
+    --card: #ffffff;
+    --accent: #0077b6;
+    --accent-2: #00a6fb;
+    --deep: #0f2a3f;
+    --success: #1f9d6c;
+    --radius-lg: 22px;
+    --radius-md: 14px;
+    --shadow-soft: 0 24px 48px rgba(13, 37, 61, 0.09);
   }
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
+  * { box-sizing: border-box; }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--ink);
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Manrope', sans-serif;
+    color: var(--ink-900);
+    background: radial-gradient(circle at 15% 10%, #f9fdff 0%, #eef5fa 40%, #ecf2f7 100%);
     overflow-x: hidden;
   }
 
-  /* ═══ NAVBAR ═══ */
-  .site-nav {
-    background: rgba(12, 26, 46, 0.96);
-    backdrop-filter: blur(12px);
-    height: 64px; padding: 0 40px;
-    display: flex; align-items: center; justify-content: space-between;
-    position: sticky; top: 0; z-index: 100;
-    border-bottom: 1px solid rgba(255,255,255,.05);
-  }
+  a { text-decoration: none; }
 
-  .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-  .brand-icon {
-    width: 38px; height: 38px; border-radius: 10px;
-    background: linear-gradient(135deg, var(--sky), var(--sky-dark));
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; color: #fff;
-    box-shadow: 0 4px 12px rgba(56,189,248,.25);
-  }
-  .brand-text { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 700; color: #fff; }
-
-  .nav-links { display: flex; align-items: center; gap: 2px; list-style: none; }
-  .nav-links a {
-    color: rgba(255,255,255,.6); text-decoration: none;
-    font-size: 0.875rem; font-weight: 500; padding: 7px 14px;
-    border-radius: 8px; transition: all .2s;
-  }
-  .nav-links a:hover { color: #fff; background: rgba(255,255,255,.08); }
-
-  .nav-actions { display: flex; gap: 8px; }
-
-  .btn-nav-ghost {
-    color: rgba(255,255,255,.75); text-decoration: none;
-    font-size: 0.875rem; font-weight: 600; padding: 7px 16px;
-    border-radius: 8px; border: 1px solid rgba(255,255,255,.15);
-    transition: all .2s;
-  }
-  .btn-nav-ghost:hover { color: #fff; background: rgba(255,255,255,.08); }
-
-  .btn-nav-primary {
-    background: var(--sky-dark); color: #fff !important; text-decoration: none;
-    font-size: 0.875rem; font-weight: 600; padding: 8px 18px;
-    border-radius: 8px; transition: all .2s;
-    box-shadow: 0 4px 12px rgba(56,189,248,.25);
-  }
-  .btn-nav-primary:hover { background: var(--sky-deeper); transform: translateY(-1px); }
-
-  /* ═══ HERO ═══ */
-  .hero {
-    background: linear-gradient(135deg, #0d1b2f 0%, #1a3f5f 45%, #0f5080 100%);
-    padding: 100px 0 80px;
-    text-align: center;
-    position: relative; overflow: hidden;
-  }
-
-  .hero-grid-bg {
-    position: absolute; inset: 0;
-    background-image:
-      linear-gradient(rgba(56,189,248,.08) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(56,189,248,.08) 1px, transparent 1px);
-    background-size: 48px 48px;
-    pointer-events: none;
-  }
-
-  .hero-glow-1 {
-    position: absolute; top: -150px; left: 50%;
-    width: 700px; height: 700px; transform: translateX(-50%);
-    background: radial-gradient(circle, rgba(56,189,248,.15) 0%, transparent 70%);
-    pointer-events: none;
-    filter: blur(40px);
-  }
-
-  .hero-glow-2 {
-    position: absolute; bottom: -100px; left: 10%;
-    width: 400px; height: 400px;
-    background: radial-gradient(circle, rgba(14,229,153,.08) 0%, transparent 70%);
-    pointer-events: none;
-    filter: blur(50px);
-  }
-
-  .hero-glow-3 {
-    position: absolute; top: 25%; right: 5%;
-    width: 300px; height: 300px;
-    background: radial-gradient(circle, rgba(56,189,248,.1) 0%, transparent 70%);
-    pointer-events: none;
-    filter: blur(40px);
-  }
-
-  .hero-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
-
-  .hero-content { display: flex; flex-direction: column; justify-content: center; }
-
-  .hero-feature-box {
-    background: rgba(255,255,255,.07);
-    border: 1.2px solid rgba(56,189,248,.18);
-    border-radius: 21px;
-    padding: 27px;
-    backdrop-filter: blur(8px);
-    position: relative;
-    overflow: hidden;
-    min-height: 400px;
-    max-width: 380px;
+  .frame {
+    width: min(1200px, calc(100% - 40px));
     margin: 0 auto;
+  }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.84);
+    border-bottom: 1px solid rgba(216, 229, 241, 0.8);
+  }
+
+  .topbar-inner {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 72px;
+    gap: 16px;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--deep);
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+  }
+
+  .brand-badge {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-  }
-
-  .hero-feature-box::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(56,189,248,.04) 0%, rgba(14,229,153,.01) 100%);
-    pointer-events: none;
-  }
-
-  .hero-feature-icon {
-    font-size: 3rem;
-    margin-bottom: 16px;
-    animation: float 3s ease-in-out infinite;
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-  }
-
-  .hero-feature-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.4rem;
-    font-weight: 700;
     color: #fff;
-    margin-bottom: 8px;
-    position: relative;
-    z-index: 1;
-    text-align: center;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+    box-shadow: 0 10px 20px rgba(0, 119, 182, 0.28);
   }
 
-  .hero-feature-desc {
-    color: rgba(255,255,255,.65);
-    font-size: 0.88rem;
-    text-align: center;
-    line-height: 1.5;
-    position: relative;
-    z-index: 1;
-    margin-bottom: 20px;
-  }
-
-  .hero-feature-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    position: relative;
-    z-index: 1;
-    width: 100%;
-  }
-
-  .feature-item {
+  .menu {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 14px;
-    background: rgba(255,255,255,.04);
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .menu a {
+    color: var(--ink-700);
+    font-size: 0.92rem;
+    font-weight: 600;
+    padding: 10px 12px;
     border-radius: 10px;
-    border: 1px solid rgba(56,189,248,.12);
+    transition: 0.2s ease;
   }
 
-  .feature-item-icon {
-    font-size: 1.2rem;
-    flex-shrink: 0;
+  .menu a:hover {
+    color: var(--deep);
+    background: #eaf3fb;
   }
 
-  .feature-item-text {
-    color: rgba(255,255,255,.75);
-    font-size: 0.85rem;
-    font-weight: 500;
+  .cta-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
   }
 
-  .hero-badge {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: linear-gradient(135deg, rgba(56,189,248,.15), rgba(14,229,153,.08));
-    border: 1.5px solid rgba(56,189,248,.25);
-    color: #38bdf8; font-size: 0.68rem; font-weight: 600;
-    letter-spacing: 2.5px; text-transform: uppercase;
-    padding: 10px 16px; border-radius: 25px; margin-bottom: 24px;
-    backdrop-filter: blur(10px);
+  .btn-light,
+  .btn-main {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    transition: 0.2s ease;
   }
 
-  .hero-title {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(2.6rem, 6vw, 3.8rem);
-    font-weight: 700; color: #fff;
-    line-height: 1.25; letter-spacing: -0.5px; margin-bottom: 24px;
-    text-shadow: 0 4px 20px rgba(56,189,248,.15);
+  .btn-light {
+    color: var(--deep);
+    border: 1px solid var(--line);
+    background: #fff;
   }
 
-  .hero-title .sky { color: #38bdf8; }
-
-  .hero-title .line2 {
-    display: block;
-    background: linear-gradient(90deg, #38bdf8, #06d6a0);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .btn-light:hover {
+    transform: translateY(-1px);
+    border-color: #bdd6ea;
   }
 
-  .hero-desc {
-    color: rgba(255,255,255,.65); font-size: 1.05rem; line-height: 1.8;
-    max-width: 600px; margin-bottom: 36px; font-weight: 400;
+  .btn-main {
+    color: #fff;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+    box-shadow: 0 14px 26px rgba(0, 119, 182, 0.25);
   }
 
-  .hero-actions { display: flex; gap: 14px; justify-content: flex-start; flex-wrap: wrap; margin-bottom: 48px; }
-
-  .btn-hero-primary {
-    background: linear-gradient(135deg, #38bdf8, #0ea5e9);
-    color: #fff !important; text-decoration: none;
-    font-size: 1rem; font-weight: 600; padding: 14px 32px;
-    border-radius: 12px; transition: all .3s;
-    box-shadow: 0 10px 28px rgba(56,189,248,.3), inset 0 1px 0 rgba(255,255,255,.2);
-    display: inline-flex; align-items: center; gap: 8px;
-    border: 1px solid rgba(255,255,255,.1);
-  }
-  .btn-hero-primary:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(56,189,248,.4); }
-
-  .btn-hero-ghost {
-    background: rgba(255,255,255,.08); color: rgba(255,255,255,.9) !important; text-decoration: none;
-    font-size: 1rem; font-weight: 600; padding: 13px 32px;
-    border-radius: 12px; border: 1.5px solid rgba(56,189,248,.3); transition: all .3s;
-    display: inline-flex; align-items: center; gap: 8px;
-    backdrop-filter: blur(10px);
-  }
-  .btn-hero-ghost:hover { background: rgba(56,189,248,.12); color: #fff !important; border-color: rgba(56,189,248,.5); }
-
-  /* Trust bar */
-  .trust-bar {
-    display: flex; align-items: center; justify-content: flex-start;
-    gap: 20px; flex-wrap: wrap;
-    padding: 18px 0;
-    margin-top: 28px;
+  .btn-main:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 32px rgba(0, 119, 182, 0.32);
   }
 
-  .trust-divider { width: 1px; height: 18px; background: rgba(56,189,248,.2); }
-
-  .trust-item {
-    display: flex; align-items: center; gap: 6px;
-    font-size: 0.82rem; color: rgba(255,255,255,.65); font-weight: 500;
+  .hero {
+    padding: 44px 0 60px;
   }
 
-  .trust-item strong { color: #fff; font-weight: 700; font-size: 0.95rem; }
-
-  .trust-item span { color: rgba(255,255,255,.55); font-weight: 400; }
-
-  /* ═══ SECTIONS ═══ */
-  .section { padding: 88px 0; }
-  .section-alt { background: #fff; }
-  .container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
-
-  .section-tag {
-    display: inline-block; font-size: 0.7rem; font-weight: 600;
-    text-transform: uppercase; letter-spacing: 2px; color: #0ea5e9;
-    background: rgba(56,189,248,.12); border: 1px solid rgba(56,189,248,.25); border-radius: 20px; padding: 6px 14px; margin-bottom: 10px;
-  }
-
-  .section-title {
-    font-family: 'Syne', sans-serif; font-size: clamp(1.7rem, 3vw, 2.4rem);
-    font-weight: 700; color: var(--ink); text-align: center;
-    letter-spacing: 0px; margin-bottom: 10px;
-  }
-
-  .section-desc {
-    text-align: center; color: var(--muted); font-size: 1rem;
-    max-width: 560px; margin: 0 auto 52px; line-height: 1.7;
-  }
-
-  .text-center { text-align: center; }
-
-  /* ═══ FEATURES ═══ */
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 18px;
-  }
-
-  .feat-card {
-    background: var(--surface); border: 1px solid var(--stroke);
-    border-radius: 16px; padding: 28px 22px;
-    transition: all .25s; text-align: center;
-    position: relative; overflow: hidden;
-  }
-
-  .feat-card::before {
-    content: '';
-    position: absolute; top: 0; left: 0; right: 0; height: 3px;
-    border-radius: 16px 16px 0 0;
-    background: var(--sky); opacity: 0; transition: opacity .25s;
-  }
-
-  .feat-card:hover { transform: translateY(-5px); box-shadow: 0 16px 36px rgba(0,0,0,.07); }
-  .feat-card:hover::before { opacity: 1; }
-
-  .feat-icon {
-    width: 52px; height: 52px; border-radius: 13px;
-    background: #e0f2fe; display: flex; align-items: center; justify-content: center;
-    font-size: 1.5rem; margin: 0 auto 16px;
-  }
-
-  .feat-title { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
-  .feat-desc { color: var(--muted); font-size: 0.875rem; line-height: 1.65; }
-
-  /* ═══ HOW IT WORKS ═══ */
-  .steps-row {
-    display: grid; grid-template-columns: repeat(4, 1fr);
-    gap: 0; position: relative;
-  }
-
-  .steps-row::before {
-    content: '';
-    position: absolute; top: 32px; left: 12%; right: 12%; height: 2px;
-    background: linear-gradient(90deg, #e0f2fe, #bae6fd, #e0f2fe);
-    z-index: 0;
-  }
-
-  .step {
-    text-align: center; padding: 0 16px;
-    position: relative; z-index: 1;
-  }
-
-  .step-num {
-    width: 64px; height: 64px;
-    background: linear-gradient(135deg, var(--sky), var(--sky-dark));
-    border-radius: 50%; color: #fff;
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 700;
-    margin: 0 auto 20px;
-    box-shadow: 0 6px 20px rgba(14,165,233,.3);
+  .hero-wrap {
     position: relative;
+    border-radius: 30px;
+    overflow: hidden;
+    min-height: 560px;
+    display: grid;
+    align-items: stretch;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid rgba(183, 210, 229, 0.55);
   }
 
-  .step-num::after {
-    content: '';
-    position: absolute; inset: -5px; border-radius: 50%;
-    border: 2px dashed #bae6fd;
-    animation: spin 16s linear infinite;
+  .hero-media {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(102deg, rgba(7, 27, 44, 0.84) 12%, rgba(10, 41, 63, 0.74) 40%, rgba(15, 60, 92, 0.5) 100%),
+      url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=2200&q=80') center/cover no-repeat;
+    transform: scale(1.02);
   }
 
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .step-title { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
-  .step-desc { color: var(--muted); font-size: 0.875rem; line-height: 1.65; }
-
-  /* ═══ STATS STRIP ═══ */
-  .stats-strip {
-    background: var(--navy);
-    padding: 72px 0; position: relative; overflow: hidden;
-  }
-
-  .stats-strip::before {
-    content: '';
-    position: absolute; inset: 0;
-    background-image: linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
-    background-size: 40px 40px;
-  }
-
-  .stats-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr);
-    gap: 20px; max-width: 900px; margin: 0 auto;
-    position: relative; z-index: 1;
-  }
-
-  .stat-item {
-    text-align: center;
-    background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
-    border-radius: 16px; padding: 28px 16px;
-    transition: background .2s;
-  }
-
-  .stat-item:hover { background: rgba(255,255,255,.1); }
-
-  .stat-num {
-    font-family: 'Syne', sans-serif; font-size: 2.4rem; font-weight: 800;
-    color: var(--sky); margin-bottom: 4px;
-  }
-
-  .stat-lbl { color: rgba(255,255,255,.55); font-size: 0.875rem; }
-
-  /* ═══ TESTIMONIALS ═══ */
-  .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-
-  .testi-card {
-    background: var(--surface); border: 1px solid var(--stroke);
-    border-radius: 16px; padding: 28px 24px; transition: all .25s;
-  }
-
-  .testi-card:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(0,0,0,.07); }
-
-  .stars { color: var(--amber); font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 14px; }
-
-  .testi-text {
-    font-size: 0.95rem; color: var(--ink); line-height: 1.7;
-    margin-bottom: 20px; font-style: italic;
-  }
-
-  .testi-author { display: flex; align-items: center; gap: 12px; }
-
-  .author-avatar {
-    width: 42px; height: 42px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--sky), var(--sky-dark));
-    display: flex; align-items: center; justify-content: center;
-    color: #fff; font-weight: 700; font-size: 0.875rem; flex-shrink: 0;
-  }
-
-  .author-name { font-weight: 700; font-size: 0.9rem; color: var(--ink); }
-  .author-role { font-size: 0.78rem; color: var(--soft); }
-
-  /* ═══ FAQ ═══ */
-  .faq-list { max-width: 740px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
-
-  .faq-item {
-    background: var(--surface); border: 1px solid var(--stroke);
-    border-radius: 14px; overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,.04); transition: box-shadow .2s;
-  }
-
-  .faq-item:hover { box-shadow: 0 6px 20px rgba(0,0,0,.07); }
-
-  details > summary { list-style: none; }
-  details > summary::-webkit-details-marker { display: none; }
-
-  .faq-q {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 18px 22px; cursor: pointer;
-    font-weight: 700; font-size: 0.95rem; gap: 12px;
-  }
-
-  .faq-icon {
-    width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
-    background: #e0f2fe; color: var(--sky-dark);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.1rem; font-weight: 700; transition: all .25s;
-  }
-
-  details[open] .faq-icon { background: var(--sky-dark); color: #fff; transform: rotate(45deg); }
-
-  .faq-a {
-    padding: 0 22px 18px; padding-top: 14px;
-    color: var(--muted); font-size: 0.9rem; line-height: 1.7;
-    border-top: 1px solid var(--stroke);
-  }
-
-  /* ═══ CTA SECTION ═══ */
-  .cta-section { padding: 80px 0; background: var(--bg); }
-
-  .cta-card {
-    background: var(--navy);
-    border-radius: 24px; padding: 72px 48px;
-    text-align: center; position: relative; overflow: hidden;
-  }
-
-  .cta-card::before {
-    content: '';
-    position: absolute; top: -100px; left: 50%;
-    width: 500px; height: 500px; transform: translateX(-50%);
-    background: radial-gradient(circle, rgba(14,165,233,.15) 0%, transparent 65%);
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(181, 222, 247, 0.12) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(181, 222, 247, 0.12) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at 30% 30%, #000 20%, transparent 75%);
     pointer-events: none;
   }
 
-  .cta-card::after {
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 26px;
+    padding: clamp(28px, 4vw, 54px);
+  }
+
+  .hero-left {
+    align-self: center;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.16);
+    color: #d8eeff;
+    border: 1px solid rgba(202, 232, 255, 0.45);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+
+  .hero h1 {
+    margin: 0;
+    color: #fff;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2.1rem, 4.6vw, 4rem);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    max-width: 760px;
+  }
+
+  .hero h1 span {
+    color: #79ceff;
+  }
+
+  .hero p {
+    margin-top: 18px;
+    margin-bottom: 0;
+    color: rgba(235, 247, 255, 0.9);
+    max-width: 620px;
+    font-size: 1.04rem;
+    line-height: 1.72;
+  }
+
+  .hero-actions {
+    margin-top: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .btn-hero-primary,
+  .btn-hero-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.94rem;
+    transition: 0.24s ease;
+  }
+
+  .btn-hero-primary {
+    color: #093350;
+    background: linear-gradient(135deg, #9eddff 0%, #64c4ff 100%);
+    box-shadow: 0 16px 30px rgba(36, 151, 220, 0.28);
+  }
+
+  .btn-hero-primary:hover {
+    transform: translateY(-2px);
+  }
+
+  .btn-hero-ghost {
+    color: #e8f5ff;
+    border: 1px solid rgba(209, 235, 255, 0.45);
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .btn-hero-ghost:hover {
+    background: rgba(255, 255, 255, 0.14);
+  }
+
+  .hero-right {
+    align-self: end;
+  }
+
+  .glass-card {
+    position: relative;
+    border-radius: 18px;
+    border: 1px solid rgba(214, 236, 255, 0.5);
+    background: rgba(8, 31, 49, 0.48);
+    backdrop-filter: blur(12px);
+    color: #e7f5ff;
+    padding: 18px;
+  }
+
+  .glass-card h3 {
+    margin: 0 0 14px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.1rem;
+  }
+
+  .score-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .score {
+    border-radius: 12px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(217, 239, 255, 0.25);
+  }
+
+  .score b {
+    display: block;
+    font-size: 1.2rem;
+    color: #b8e7ff;
+    margin-bottom: 4px;
+  }
+
+  .score span {
+    font-size: 0.82rem;
+    color: rgba(227, 243, 255, 0.86);
+  }
+
+  .overview {
+    padding: 82px 0 26px;
+  }
+
+  .section-head {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .section-head .tag {
+    display: inline-block;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: #e8f4ff;
+    color: #2f5f86;
+    font-size: 0.73rem;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+  }
+
+  .section-head h2 {
+    margin: 12px 0 10px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.7rem, 3vw, 2.6rem);
+    letter-spacing: -0.02em;
+  }
+
+  .section-head p {
+    margin: 0 auto;
+    max-width: 700px;
+    color: #4d6781;
+    font-size: 0.98rem;
+    line-height: 1.7;
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .feature {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    transition: 0.25s ease;
+  }
+
+  .feature:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 16px 26px rgba(15, 53, 80, 0.1);
+    border-color: #b8d5ea;
+  }
+
+  .feature .icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 700;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #0b82c4 0%, #41b4f5 100%);
+  }
+
+  .feature h4 {
+    margin: 0 0 8px;
+    font-size: 1rem;
+  }
+
+  .feature p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #4e6a84;
+    line-height: 1.6;
+  }
+
+  .metrics {
+    padding: 56px 0;
+  }
+
+  .metric-wrap {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .metric {
+    background: linear-gradient(140deg, #ffffff 0%, #f4faff 100%);
+    border: 1px solid #d5e7f5;
+    border-radius: 14px;
+    padding: 18px;
+    text-align: center;
+  }
+
+  .metric .num {
+    display: block;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2rem;
+    color: var(--accent);
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .metric .label {
+    margin-top: 8px;
+    font-size: 0.86rem;
+    color: #52708a;
+    font-weight: 600;
+  }
+
+  .showcase {
+    padding: 20px 0 80px;
+  }
+
+  .showcase-panel {
+    border-radius: 20px;
+    background: linear-gradient(125deg, #0f2a3f 0%, #14476a 45%, #1c6ca0 100%);
+    color: #eaf6ff;
+    padding: clamp(24px, 4vw, 42px);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .showcase-panel::after {
     content: '';
-    position: absolute; inset: 0;
-    background-image: linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
-    background-size: 40px 40px;
+    position: absolute;
+    width: 340px;
+    height: 340px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(146, 219, 255, 0.28) 0%, rgba(146, 219, 255, 0) 72%);
+    right: -120px;
+    bottom: -120px;
+    pointer-events: none;
   }
 
-  .cta-inner { position: relative; z-index: 1; }
-
-  .cta-tag {
-    display: inline-block; font-size: 0.7rem; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 2px; color: var(--sky);
-    background: rgba(14,165,233,.12); border: 1px solid rgba(14,165,233,.2);
-    border-radius: 20px; padding: 4px 12px; margin-bottom: 16px;
+  .showcase-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 18px;
+    align-items: center;
   }
 
-  .cta-title {
-    font-family: 'Syne', sans-serif; font-size: clamp(1.9rem, 4vw, 2.8rem);
-    font-weight: 800; color: #fff; letter-spacing: -0.5px; margin-bottom: 12px;
+  .showcase h3 {
+    margin: 0 0 10px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.4rem, 3vw, 2.1rem);
   }
 
-  .cta-desc { color: rgba(255,255,255,.55); font-size: 1rem; margin-bottom: 32px; }
-
-  .cta-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-
-  .btn-cta-white {
-    background: #fff; color: var(--sky-dark) !important; text-decoration: none;
-    font-size: 1rem; font-weight: 700; padding: 13px 28px;
-    border-radius: 11px; transition: all .25s;
-    box-shadow: 0 6px 18px rgba(0,0,0,.15);
-    display: inline-flex; align-items: center; gap: 8px;
-  }
-  .btn-cta-white:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,.2); }
-
-  .btn-cta-ghost {
-    background: rgba(255,255,255,.1); color: rgba(255,255,255,.85) !important; text-decoration: none;
-    font-size: 1rem; font-weight: 600; padding: 12px 26px;
-    border-radius: 11px; border: 1px solid rgba(255,255,255,.18); transition: all .25s;
-  }
-  .btn-cta-ghost:hover { background: rgba(255,255,255,.16); color: #fff !important; }
-
-  /* ═══ FOOTER ═══ */
-  .site-footer {
-    background: var(--navy); color: rgba(255,255,255,.55);
-    padding: 60px 0 28px;
-    border-top: 1px solid rgba(255,255,255,.05);
+  .showcase p {
+    margin: 0;
+    color: rgba(233, 247, 255, 0.9);
+    line-height: 1.7;
   }
 
-  .footer-grid {
-    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 48px; margin-bottom: 48px;
+  .timeline {
+    display: grid;
+    gap: 10px;
   }
 
-  .footer-brand-name {
-    font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800;
-    color: #fff; margin-bottom: 12px;
-    display: flex; align-items: center; gap: 10px;
+  .timeline-item {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(207, 236, 255, 0.35);
+    border-radius: 12px;
+    padding: 12px;
+    font-size: 0.89rem;
   }
 
-  .footer-brand-desc { font-size: 0.875rem; line-height: 1.7; max-width: 260px; }
-
-  .footer-socials { display: flex; gap: 8px; margin-top: 18px; }
-
-  .social-link {
-    width: 34px; height: 34px; border-radius: 8px;
-    background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.85rem; color: rgba(255,255,255,.6); text-decoration: none;
-    transition: all .2s;
-  }
-  .social-link:hover { background: rgba(255,255,255,.15); color: #fff; }
-
-  .footer-col h4 {
-    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem;
-    color: #fff; margin-bottom: 16px;
+  .footer {
+    border-top: 1px solid #d2e5f4;
+    padding: 30px 0 42px;
+    color: #5b7590;
   }
 
-  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 9px; }
-  .footer-col ul a { color: rgba(255,255,255,.5); font-size: 0.875rem; text-decoration: none; transition: color .2s; }
-  .footer-col ul a:hover { color: var(--sky); }
-
-  .footer-bottom {
-    border-top: 1px solid rgba(255,255,255,.07);
-    padding-top: 24px; display: flex;
-    align-items: center; justify-content: space-between;
-    flex-wrap: wrap; gap: 10px; font-size: 0.82rem;
+  .footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
   }
 
-  .footer-bottom a { color: var(--sky); text-decoration: none; }
+  .footer-links {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
 
-  /* ═══ ANIMATIONS ═══ */
+  .footer-links a {
+    color: #456583;
+    font-weight: 600;
+    font-size: 0.88rem;
+  }
+
   .reveal {
-    opacity: 0; transform: translateY(28px);
-    transition: opacity .6s ease, transform .6s ease;
-  }
-  .reveal.visible { opacity: 1; transform: none; }
-  .r1 { transition-delay: .1s; }
-  .r2 { transition-delay: .2s; }
-  .r3 { transition-delay: .3s; }
-  .r4 { transition-delay: .4s; }
-
-  /* ═══ RESPONSIVE ═══ */
-  @media (max-width: 1024px) {
-    .hero-inner { grid-template-columns: 1fr; gap: 40px; }
-    .hero-feature-box { min-height: 400px; }
-    .features-grid { grid-template-columns: repeat(2, 1fr); }
-    .steps-row { grid-template-columns: repeat(2, 1fr); gap: 32px; }
-    .steps-row::before { display: none; }
-    .testi-grid { grid-template-columns: repeat(2, 1fr); }
-    .stats-grid { grid-template-columns: repeat(2, 1fr); }
-    .footer-grid { grid-template-columns: 1fr 1fr; }
+    opacity: 0;
+    transform: translateY(16px);
+    transition: 0.6s ease;
   }
 
-  @media (max-width: 640px) {
-    .section { padding: 56px 0; }
-    .hero-inner { grid-template-columns: 1fr; gap: 30px; }
-    .hero-feature-box { min-height: 350px; padding: 30px 20px; }
-    .hero-feature-list { gap: 10px; }
-    .feature-item { padding: 10px 12px; }
-    .hero-badge { font-size: 0.65rem; padding: 6px 12px; }
-    .features-grid { grid-template-columns: 1fr; }
-    .steps-row { grid-template-columns: 1fr; }
-    .testi-grid { grid-template-columns: 1fr; }
-    .stats-grid { grid-template-columns: repeat(2, 1fr); }
-    .footer-grid { grid-template-columns: 1fr; }
-    .nav-links { display: none; }
-    .cta-card { padding: 40px 20px; }
-    .hero { padding: 60px 0 60px; }
-    .container { padding: 0 16px; }
+  .reveal.in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 1100px) {
+    .hero-content { grid-template-columns: 1fr; }
+    .hero-right { align-self: start; }
+    .feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .metric-wrap { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .showcase-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 760px) {
+    .frame { width: min(1200px, calc(100% - 24px)); }
+    .topbar-inner { padding: 8px 0; }
+    .menu { display: none; }
+    .hero { padding-top: 20px; }
+    .hero-wrap { min-height: 520px; border-radius: 20px; }
+    .hero h1 { font-size: clamp(1.8rem, 8vw, 2.5rem); }
+    .hero p { font-size: 0.95rem; }
+    .feature-grid,
+    .metric-wrap { grid-template-columns: 1fr; }
   }
 </style>
 
-<!-- NAVBAR -->
-<nav class="site-nav">
-  <a href="/" class="nav-brand">
-    <div class="brand-icon">S</div>
-    <span class="brand-text">StudentMS</span>
-  </a>
-  <ul class="nav-links">
-    <li><a href="#features">Features</a></li>
-    <li><a href="#how-it-works">How It Works</a></li>
-    <li><a href="#testimonials">Reviews</a></li>
-    <li><a href="#faq">FAQ</a></li>
-  </ul>
-  <div class="nav-actions">
-    <a href="/contact" class="btn-nav-ghost">Contact</a>
-    <a href="/login" class="btn-nav-ghost">Login</a>
-    <a href="/registration" class="btn-nav-primary">Get Started →</a>
-  </div>
-</nav>
+<header class="topbar">
+  <div class="frame topbar-inner">
+    <a class="brand" href="/">
+      <span class="brand-badge">S</span>
+      <span>StudentMS</span>
+    </a>
 
-<!-- HERO -->
+    <nav class="menu">
+      <a href="#features">Features</a>
+      <a href="#metrics">Outcomes</a>
+      <a href="#workflow">Workflow</a>
+      <a href="/contact">Contact</a>
+    </nav>
+
+    <div class="cta-row">
+      <a class="btn-light" href="/login">Login</a>
+      <a class="btn-main" href="/registration">Get Started</a>
+    </div>
+  </div>
+</header>
+
 <section class="hero">
-  <div class="hero-grid-bg"></div>
-  <div class="hero-glow-1"></div>
-  <div class="hero-glow-2"></div>
-  <div class="hero-glow-3"></div>
-
-  <div class="hero-inner">
-    <!-- LEFT COLUMN -->
+  <div class="frame hero-wrap reveal">
+    <div class="hero-media"></div>
+    <div class="hero-grid"></div>
     <div class="hero-content">
-      <div class="hero-badge reveal">🎓 Complete Academic Platform</div>
-      <h1 class="hero-title reveal r1">
-        Manage Your Campus<br>
-        <span class="line2">Smarter. Faster. Together.</span>
-      </h1>
-      <p class="hero-desc reveal r2">
-        The all-in-one student management platform for modern institutions. Track attendance, publish results, and streamline operations from a single, beautiful dashboard.
+      <div class="hero-left">
+        <div class="eyebrow">Campus Intelligence Platform</div>
+        <h1>Design-led <span>Student Management</span> for ambitious institutions.</h1>
+        <p>
+          A high-performance academic workspace for admissions, attendance, grading, and reporting.
+          Built for schools that care about clarity, speed, and a premium digital experience.
+        </p>
+        <div class="hero-actions">
+          <a href="/registration" class="btn-hero-primary">Launch Your Campus</a>
+          <a href="/contact" class="btn-hero-ghost">Book a Live Demo</a>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="glass-card">
+          <h3>Live Institutional Snapshot</h3>
+          <div class="score-grid">
+            <div class="score">
+              <b>98.4%</b>
+              <span>Attendance Accuracy</span>
+            </div>
+            <div class="score">
+              <b>4.7x</b>
+              <span>Faster Result Publishing</span>
+            </div>
+            <div class="score">
+              <b>500+</b>
+              <span>Institutions Onboarded</span>
+            </div>
+            <div class="score">
+              <b>99.9%</b>
+              <span>Platform Availability</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="overview" id="features">
+  <div class="frame">
+    <div class="section-head reveal">
+      <span class="tag">Core Modules</span>
+      <h2>A refined command center for every academic role</h2>
+      <p>
+        Purpose-built workflows for HOD, staff, and students with clean interfaces that reduce admin load and improve decision making.
       </p>
-      <div class="hero-actions reveal r3">
-        <a href="/registration" class="btn-hero-primary">Get Started Free →</a>
-        <a href="#how-it-works" class="btn-hero-ghost">▶ See How It Works</a>
-      </div>
-      <div class="trust-bar reveal r4">
-        <div class="trust-item"><strong>500+</strong> <span>Institutions</span></div>
-        <div class="trust-divider"></div>
-        <div class="trust-item"><strong>10k+</strong> <span>Teachers</span></div>
-        <div class="trust-divider"></div>
-        <div class="trust-item"><strong>200k+</strong> <span>Students</span></div>
-        <div class="trust-divider"></div>
-        <div class="trust-item"><strong>99.9%</strong> <span>Uptime</span></div>
-      </div>
     </div>
 
-    <!-- RIGHT COLUMN - FEATURE BOX -->
-    <div class="hero-feature-box reveal r2">
-      <div class="hero-feature-icon">🚀</div>
-      <h3 class="hero-feature-title">Smart Features</h3>
-      <p class="hero-feature-desc">Everything you need to manage your institution</p>
-      
-      <div class="hero-feature-list">
-        <div class="feature-item">
-          <span class="feature-item-icon">📋</span>
-          <span class="feature-item-text">Real-time Attendance Tracking</span>
+    <div class="feature-grid">
+      <article class="feature reveal">
+        <span class="icon">AT</span>
+        <h4>Attendance Intelligence</h4>
+        <p>Daily tracking with auto-summary views, absence patterns, and class-level performance trends.</p>
+      </article>
+      <article class="feature reveal">
+        <span class="icon">RM</span>
+        <h4>Result Management</h4>
+        <p>Fast mark entry, transparent grade publishing, and report-ready academic records.</p>
+      </article>
+      <article class="feature reveal">
+        <span class="icon">RA</span>
+        <h4>Role Access Control</h4>
+        <p>Clear separation of permissions so each role sees exactly what it needs, nothing more.</p>
+      </article>
+      <article class="feature reveal">
+        <span class="icon">AN</span>
+        <h4>Analytics Layer</h4>
+        <p>Visual dashboards for enrollment, performance, attendance, and operational confidence.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="metrics" id="metrics">
+  <div class="frame metric-wrap">
+    <div class="metric reveal">
+      <span class="num" data-count="12">0</span>
+      <span class="label">Minutes Onboarding</span>
+    </div>
+    <div class="metric reveal">
+      <span class="num" data-count="86">0</span>
+      <span class="label">Admin Time Saved (%)</span>
+    </div>
+    <div class="metric reveal">
+      <span class="num" data-count="240">0</span>
+      <span class="label">Reports Auto Generated</span>
+    </div>
+    <div class="metric reveal">
+      <span class="num" data-count="24">0</span>
+      <span class="label">Support Coverage (Hours)</span>
+    </div>
+  </div>
+</section>
+
+<section class="showcase" id="workflow">
+  <div class="frame">
+    <div class="showcase-panel reveal">
+      <div class="showcase-grid">
+        <div>
+          <h3>From admission to publication, every step is connected</h3>
+          <p>
+            Stop juggling spreadsheets and disconnected tools. StudentMS creates one elegant operational flow from first enrollment to final result sharing.
+          </p>
         </div>
-        <div class="feature-item">
-          <span class="feature-item-icon">📊</span>
-          <span class="feature-item-text">Automated Result Management</span>
-        </div>
-        <div class="feature-item">
-          <span class="feature-item-icon">👨‍🏫</span>
-          <span class="feature-item-text">Staff Dashboard & Analytics</span>
-        </div>
-        <div class="feature-item">
-          <span class="feature-item-icon">👨‍🎓</span>
-          <span class="feature-item-text">Student Portal & Profiles</span>
-        </div>
-        <div class="feature-item">
-          <span class="feature-item-icon">⚙️</span>
-          <span class="feature-item-text">Advanced Configuration</span>
+        <div class="timeline">
+          <div class="timeline-item"><strong>Step 1:</strong> Register institution and define academic structure.</div>
+          <div class="timeline-item"><strong>Step 2:</strong> Add staff and students with role-based onboarding.</div>
+          <div class="timeline-item"><strong>Step 3:</strong> Run attendance, marks, and feedback from one hub.</div>
+          <div class="timeline-item"><strong>Step 4:</strong> Publish outcomes with analytics-backed confidence.</div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FEATURES -->
-<section class="section" id="features">
-  <div class="container">
-    <div class="text-center reveal">
-      <span class="section-tag">Features</span>
-      <h2 class="section-title">Everything your institution needs</h2>
-      <p class="section-desc">Purpose-built tools that work together seamlessly — from day one to year end.</p>
+<footer class="footer">
+  <div class="frame footer-row">
+    <div>
+      <strong>StudentMS</strong> - A design-first platform for modern institutions.
     </div>
-    <div class="features-grid">
-      <div class="feat-card reveal r1">
-        <div class="feat-icon">📋</div>
-        <div class="feat-title">Attendance Tracking</div>
-        <p class="feat-desc">Digital registers, real-time presence monitoring, and automated alerts for low attendance.</p>
-      </div>
-      <div class="feat-card reveal r2">
-        <div class="feat-icon">📊</div>
-        <div class="feat-title">Result Management</div>
-        <p class="feat-desc">Seamless grade entry, automated GPA calculation, and instant transcript generation.</p>
-      </div>
-      <div class="feat-card reveal r3">
-        <div class="feat-icon">👨‍🏫</div>
-        <div class="feat-title">Staff Dashboard</div>
-        <p class="feat-desc">A dedicated workspace for teachers to manage classes, assignments, and student data.</p>
-      </div>
-      <div class="feat-card reveal r4">
-        <div class="feat-icon">👨‍🎓</div>
-        <div class="feat-title">Student Portal</div>
-        <p class="feat-desc">Personalized profiles showing schedules, marks, attendance, and academic history.</p>
-      </div>
-      <div class="feat-card reveal r1">
-        <div class="feat-icon">🔔</div>
-        <div class="feat-title">Smart Notifications</div>
-        <p class="feat-desc">Automated alerts for exams, low attendance, result releases, and important updates.</p>
-      </div>
-      <div class="feat-card reveal r2">
-        <div class="feat-icon">🔒</div>
-        <div class="feat-title">Role-based Access</div>
-        <p class="feat-desc">Fine-grained admin, teacher, and student permissions with enterprise-grade security.</p>
-      </div>
-      <div class="feat-card reveal r3">
-        <div class="feat-icon">📅</div>
-        <div class="feat-title">Timetable Builder</div>
-        <p class="feat-desc">Create and publish class schedules with conflict detection and easy management.</p>
-      </div>
-      <div class="feat-card reveal r4">
-        <div class="feat-icon">📈</div>
-        <div class="feat-title">Analytics & Reports</div>
-        <p class="feat-desc">Institution-wide performance insights with visual dashboards and export options.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- HOW IT WORKS -->
-<section class="section section-alt" id="how-it-works">
-  <div class="container">
-    <div class="text-center reveal">
-      <span class="section-tag">How It Works</span>
-      <h2 class="section-title">Up and running in minutes</h2>
-      <p class="section-desc">Four simple steps to get your entire institution on StudentMS.</p>
-    </div>
-    <div class="steps-row">
-      <div class="step reveal r1">
-        <div class="step-num">1</div>
-        <div class="step-title">Register Your Institution</div>
-        <p class="step-desc">Sign up and create your institution profile. Takes less than 2 minutes with our guided setup.</p>
-      </div>
-      <div class="step reveal r2">
-        <div class="step-num">2</div>
-        <div class="step-title">Add Students & Staff</div>
-        <p class="step-desc">Import via CSV or add manually. Accounts and credentials are auto-generated instantly.</p>
-      </div>
-      <div class="step reveal r3">
-        <div class="step-num">3</div>
-        <div class="step-title">Manage Operations</div>
-        <p class="step-desc">Mark attendance, enter grades, apply for leave, and communicate — all in one place.</p>
-      </div>
-      <div class="step reveal r4">
-        <div class="step-num">4</div>
-        <div class="step-title">Publish Results</div>
-        <p class="step-desc">Generate report cards and share with students and parents instantly with one click.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- STATS STRIP -->
-<div class="stats-strip">
-  <div class="container">
-    <div class="text-center reveal" style="margin-bottom:40px;">
-      <h2 style="font-family:'Syne',sans-serif;font-size:1.9rem;font-weight:800;color:#fff;letter-spacing:-0.5px;margin-bottom:8px;">Built for real institutions.</h2>
-      <p style="color:rgba(255,255,255,.45);font-size:1rem;">StudentMS was born from the challenge of modernizing education administration. We handle the paperwork so educators can focus on teaching.</p>
-    </div>
-    <div class="stats-grid">
-      <div class="stat-item reveal r1"><div class="stat-num">500+</div><div class="stat-lbl">Institutions</div></div>
-      <div class="stat-item reveal r2"><div class="stat-num">10k+</div><div class="stat-lbl">Teachers</div></div>
-      <div class="stat-item reveal r3"><div class="stat-num">200k+</div><div class="stat-lbl">Students</div></div>
-      <div class="stat-item reveal r4"><div class="stat-num">99.9%</div><div class="stat-lbl">Uptime SLA</div></div>
-    </div>
-  </div>
-</div>
-
-<!-- TESTIMONIALS -->
-<section class="section" id="testimonials">
-  <div class="container">
-    <div class="text-center reveal">
-      <span class="section-tag">Testimonials</span>
-      <h2 class="section-title">What educators say</h2>
-      <p class="section-desc">Hundreds of institutions trust StudentMS every day. Here's what they think.</p>
-    </div>
-    <div class="testi-grid">
-      <div class="testi-card reveal r1">
-        <div class="stars">★★★★★</div>
-        <p class="testi-text">"StudentMS completely transformed how we handle attendance. What used to take 30 minutes of paperwork now happens in seconds. Our entire staff loves it."</p>
-        <div class="testi-author">
-          <div class="author-avatar">RK</div>
-          <div>
-            <div class="author-name">Rakibul Karim</div>
-            <div class="author-role">Principal, Dhaka Model School</div>
-          </div>
-        </div>
-      </div>
-      <div class="testi-card reveal r2">
-        <div class="stars">★★★★★</div>
-        <p class="testi-text">"The result management module is incredible. GPA calculations are automatic and parents get notified instantly. Exam season has never been less stressful."</p>
-        <div class="testi-author">
-          <div class="author-avatar">SA</div>
-          <div>
-            <div class="author-name">Sumaiya Akter</div>
-            <div class="author-role">Academic Director, Chittagong College</div>
-          </div>
-        </div>
-      </div>
-      <div class="testi-card reveal r3">
-        <div class="stars">★★★★★</div>
-        <p class="testi-text">"Onboarding was a breeze. We imported 3,000 students from a CSV in under 10 minutes. The analytics dashboard gives us insights we never had before."</p>
-        <div class="testi-author">
-          <div class="author-avatar">MH</div>
-          <div>
-            <div class="author-name">Mehedi Hasan</div>
-            <div class="author-role">IT Admin, Rajshahi University</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- FAQ -->
-<section class="section section-alt" id="faq">
-  <div class="container">
-    <div class="text-center reveal">
-      <span class="section-tag">FAQ</span>
-      <h2 class="section-title">Frequently asked questions</h2>
-      <p class="section-desc">Got questions? We've got answers. Can't find what you need? <a href="/contact" style="color:var(--sky-dark);text-decoration:none;font-weight:600;">Reach out →</a></p>
-    </div>
-    <div class="faq-list reveal">
-      <details class="faq-item">
-        <summary class="faq-q">Is StudentMS free to use? <span class="faq-icon">+</span></summary>
-        <div class="faq-a">Yes! StudentMS offers a generous free tier suitable for small institutions. For larger schools needing bulk imports, analytics, and priority support, we offer affordable paid plans.</div>
-      </details>
-      <details class="faq-item">
-        <summary class="faq-q">How do I add students and teachers in bulk? <span class="faq-icon">+</span></summary>
-        <div class="faq-a">Prepare a CSV file with the required columns and upload it from the Admin Dashboard. StudentMS automatically creates accounts and sends login credentials to each user.</div>
-      </details>
-      <details class="faq-item">
-        <summary class="faq-q">Can parents track their child's attendance and results? <span class="faq-icon">+</span></summary>
-        <div class="faq-a">Absolutely. Parents can be given read-only access to their child's profile to view attendance records, exam results, and receive automatic notifications for important updates.</div>
-      </details>
-      <details class="faq-item">
-        <summary class="faq-q">Is my institution's data secure? <span class="faq-icon">+</span></summary>
-        <div class="faq-a">Security is our top priority. All data is encrypted in transit and at rest using AES-256. We comply with GDPR standards and perform regular security audits. Your data is never shared with third parties.</div>
-      </details>
-      <details class="faq-item">
-        <summary class="faq-q">Does it work on mobile devices? <span class="faq-icon">+</span></summary>
-        <div class="faq-a">Yes! StudentMS is fully responsive and works smoothly on all screen sizes — desktop, tablet, and mobile. A dedicated mobile app is currently in development.</div>
-      </details>
-      <details class="faq-item">
-        <summary class="faq-q">What kind of support do you offer? <span class="faq-icon">+</span></summary>
-        <div class="faq-a">We provide email support for all users, live chat for paid plans, and a dedicated account manager for enterprise institutions. Our average response time is under 2 hours on business days.</div>
-      </details>
-    </div>
-  </div>
-</section>
-
-<!-- CTA -->
-<section class="cta-section">
-  <div class="container">
-    <div class="cta-card reveal">
-      <div class="cta-inner">
-        <div class="cta-tag">Get Started Today</div>
-        <h3 class="cta-title">Start managing students<br>the modern way</h3>
-        <p class="cta-desc">Join 500+ institutions already using StudentMS. Free to start. No credit card required.</p>
-        <div class="cta-actions">
-          <a href="/registration" class="btn-cta-white">Sign Up Free →</a>
-          <a href="/contact" class="btn-cta-ghost">Talk to Sales</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer class="site-footer">
-  <div class="container">
-    <div class="footer-grid">
-      <div>
-        <div class="footer-brand-name">
-          <div class="brand-icon" style="width:32px;height:32px;font-size:0.9rem;">S</div>
-          StudentMS
-        </div>
-        <p class="footer-brand-desc">The modern student management platform trusted by institutions across the country. Simplifying education, one school at a time.</p>
-        <div class="footer-socials">
-          <a href="#" class="social-link">🐦</a>
-          <a href="#" class="social-link">💼</a>
-          <a href="#" class="social-link">📘</a>
-          <a href="#" class="social-link">📷</a>
-        </div>
-      </div>
-      <div class="footer-col">
-        <h4>Product</h4>
-        <ul>
-          <li><a href="#features">Features</a></li>
-          <li><a href="#how-it-works">How It Works</a></li>
-          <li><a href="#">Pricing</a></li>
-          <li><a href="#">Changelog</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Company</h4>
-        <ul>
-          <li><a href="#">About</a></li>
-          <li><a href="/contact">Contact</a></li>
-          <li><a href="#">Blog</a></li>
-          <li><a href="#">Careers</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Support</h4>
-        <ul>
-          <li><a href="#">Help Center</a></li>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Terms of Service</a></li>
-          <li><a href="#">System Status</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>© 2026 StudentMS. All rights reserved.</span>
-      <span>Made with ❤️ for educators everywhere · <a href="/contact">Contact Us</a></span>
+    <div class="footer-links">
+      <a href="/contact">Contact</a>
+      <a href="/login">Login</a>
+      <a href="/registration">Register</a>
     </div>
   </div>
 </footer>
 
 <script>
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
-  }, { threshold: 0.1 });
+  (function () {
+    const revealEls = document.querySelectorAll('.reveal');
+    const metricEls = document.querySelectorAll('.num');
 
-  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('in');
+        revealObserver.unobserve(entry.target);
+      });
+    }, { threshold: 0.12 });
 
-  // Trigger hero immediately
-  setTimeout(() => {
-    document.querySelectorAll('.hero .reveal').forEach(el => el.classList.add('visible'));
-  }, 80);
+    revealEls.forEach((el) => revealObserver.observe(el));
+
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+        const max = Number(el.getAttribute('data-count')) || 0;
+        let value = 0;
+        const step = Math.max(1, Math.ceil(max / 36));
+
+        const tick = () => {
+          value += step;
+          if (value >= max) {
+            el.textContent = String(max);
+            return;
+          }
+          el.textContent = String(value);
+          requestAnimationFrame(tick);
+        };
+
+        tick();
+        counterObserver.unobserve(el);
+      });
+    }, { threshold: 0.4 });
+
+    metricEls.forEach((el) => counterObserver.observe(el));
+  })();
 </script>
-
 {% endblock content %}
