@@ -369,35 +369,68 @@ def staff_add_result_save(request):
     if request.method != "POST":
         messages.error(request, "Invalid Method")
         return redirect('staff_add_result')
-    else:
-        student_admin_id = request.POST.get('student_list')
-        assignment_marks = request.POST.get('assignment_marks')
-        exam_marks = request.POST.get('exam_marks')
-        subject_id = request.POST.get('subject')
 
-        student_obj = Students.objects.get(admin=student_admin_id)
-        subject_obj = Subjects.objects.get(id=subject_id)
+    student_admin_id = request.POST.get('student_list')
+    assignment_marks = request.POST.get('assignment_marks')
+    exam_marks = request.POST.get('exam_marks')
+    subject_id = request.POST.get('subject')
 
-        try:
-            # Check if Students Result Already Exists or not
-            check_exist = StudentResult.objects.filter(subject_id=subject_obj,
-                                                       student_id=student_obj).exists()
-            if check_exist:
-                result = StudentResult.objects.get(subject_id=subject_obj,
-                                                   student_id=student_obj)
-                result.subject_assignment_marks = assignment_marks
-                result.subject_exam_marks = exam_marks
-                result.save()
-                messages.success(request, "Result Updated Successfully!")
-                return redirect('staff_add_result')
-            else:
-                result = StudentResult(student_id=student_obj,
-                                       subject_id=subject_obj,
-                                       subject_exam_marks=exam_marks,
-                                       subject_assignment_marks=assignment_marks)
-                result.save()
-                messages.success(request, "Result Added Successfully!")
-                return redirect('staff_add_result')
-        except:
-            messages.error(request, "Failed to Add Result!")
+    try:
+        if not student_admin_id or not subject_id:
+            messages.error(request, "Please select subject and student first.")
             return redirect('staff_add_result')
+
+        # Ensure the subject belongs to the logged-in staff.
+        subject_obj = Subjects.objects.filter(
+            id=subject_id,
+            staff_id=request.user.id,
+        ).first()
+        if subject_obj is None:
+            messages.error(request, "Invalid subject selected.")
+            return redirect('staff_add_result')
+
+        # UI can send either CustomUser.id (admin id) or Students.id.
+        # Also enforce that selected student is from this subject's course.
+        student_obj = Students.objects.filter(
+            admin=student_admin_id,
+            course_id=subject_obj.course_id,
+        ).first()
+        if student_obj is None:
+            student_obj = Students.objects.filter(
+                id=student_admin_id,
+                course_id=subject_obj.course_id,
+            ).first()
+        if student_obj is None:
+            messages.error(request, "Invalid student selected. Please fetch students again.")
+            return redirect('staff_add_result')
+
+        # Check if Students Result Already Exists or not
+        check_exist = StudentResult.objects.filter(
+            subject_id=subject_obj,
+            student_id=student_obj,
+        ).exists()
+
+        if check_exist:
+            result = StudentResult.objects.get(
+                subject_id=subject_obj,
+                student_id=student_obj,
+            )
+            result.subject_assignment_marks = assignment_marks
+            result.subject_exam_marks = exam_marks
+            result.save()
+            messages.success(request, "Result Updated Successfully!")
+        else:
+            result = StudentResult(
+                student_id=student_obj,
+                subject_id=subject_obj,
+                subject_exam_marks=exam_marks,
+                subject_assignment_marks=assignment_marks,
+            )
+            result.save()
+            messages.success(request, "Result Added Successfully!")
+
+    except Exception:
+        traceback.print_exc()
+        messages.error(request, "Failed to Add Result!")
+
+    return redirect('staff_add_result')

@@ -46,109 +46,116 @@ class Command(BaseCommand):
             session_end_year=date(2026, 3, 31),
         )
 
-        course_cs, _ = Courses.objects.get_or_create(course_name="BSc Computer Science")
-        course_bba, _ = Courses.objects.get_or_create(course_name="BBA")
+        course_names = [
+            "BSc Computer Science",
+            "BCA",
+            "BBA",
+            "BCom",
+            "BA English",
+            "BSc Mathematics",
+            "BSc Physics",
+            "BSc Chemistry",
+        ]
+        courses = {
+            name: Courses.objects.get_or_create(course_name=name)[0]
+            for name in course_names
+        }
 
-        staff_users = [
-            self._create_staff_user(
+        staff_specs = [
+            ("demo_staff_cs", "Alice", "Sharma", "City Center", "BSc Computer Science"),
+            ("demo_staff_bca", "Rahul", "Verma", "North Avenue", "BCA"),
+            ("demo_staff_bba", "Ravi", "Nair", "South Block", "BBA"),
+            ("demo_staff_bcom", "Neha", "Kapoor", "Lake Town", "BCom"),
+            ("demo_staff_eng", "Ishita", "Roy", "Green View", "BA English"),
+            ("demo_staff_math", "Sourav", "Dutta", "Hill Road", "BSc Mathematics"),
+            ("demo_staff_phy", "Ankit", "Das", "Riverside", "BSc Physics"),
+            ("demo_staff_chem", "Priyanshi", "Mehra", "Sunrise Park", "BSc Chemistry"),
+        ]
+        staff_users = []
+        staff_by_course = {}
+        for username, first_name, last_name, address, course_name in staff_specs:
+            staff_user = self._create_staff_user(
                 User,
-                username="demo_staff_cs",
-                email="demo_staff_cs@example.com",
-                first_name="Alice",
-                last_name="Sharma",
-                address="City Center",
-            ),
-            self._create_staff_user(
-                User,
-                username="demo_staff_bba",
-                email="demo_staff_bba@example.com",
-                first_name="Ravi",
-                last_name="Verma",
-                address="North Avenue",
-            ),
+                username=username,
+                email=f"{username}@example.com",
+                first_name=first_name,
+                last_name=last_name,
+                address=address,
+            )
+            staff_users.append(staff_user)
+            staff_by_course[course_name] = staff_user
+
+        subject_plan = {
+            "BSc Computer Science": ["Data Structures", "Database Systems", "Operating Systems"],
+            "BCA": ["Programming in C", "Web Technologies", "Computer Networks"],
+            "BBA": ["Business Management", "Marketing", "Human Resources"],
+            "BCom": ["Accounting", "Corporate Finance", "Business Law"],
+            "BA English": ["Literary Theory", "Poetry", "Communication Skills"],
+            "BSc Mathematics": ["Algebra", "Calculus", "Statistics"],
+            "BSc Physics": ["Mechanics", "Electromagnetism", "Quantum Physics"],
+            "BSc Chemistry": ["Organic Chemistry", "Inorganic Chemistry", "Physical Chemistry"],
+        }
+
+        subjects = []
+        for course_name, subject_names in subject_plan.items():
+            for subject_name in subject_names:
+                subjects.append(
+                    self._create_subject(subject_name, courses[course_name], staff_by_course[course_name])
+                )
+
+        first_names = [
+            "Sneha", "Arjun", "Priya", "Karan", "Anaya", "Rohit", "Aditi", "Vivek", "Pooja", "Naman",
+            "Riya", "Aman", "Meera", "Sagnik", "Diya", "Harsh", "Tanisha", "Yash", "Simran", "Ayaan",
+        ]
+        last_names = [
+            "Patel", "Nair", "Das", "Joshi", "Singh", "Mehta", "Roy", "Dutta", "Khan", "Ghosh",
+            "Mukherjee", "Sharma", "Verma", "Reddy", "Saha", "Mitra", "Bose", "Chopra", "Kapoor", "Paul",
         ]
 
-        subjects = [
-            self._create_subject("Data Structures", course_cs, staff_users[0]),
-            self._create_subject("Database Systems", course_cs, staff_users[0]),
-            self._create_subject("Business Management", course_bba, staff_users[1]),
-            self._create_subject("Accounting", course_bba, staff_users[1]),
-        ]
+        students = []
+        student_index = 1
+        for course_name in course_names:
+            for _ in range(10):
+                fname = first_names[(student_index - 1) % len(first_names)]
+                lname = last_names[(student_index - 1) % len(last_names)]
+                gender = "Female" if student_index % 2 else "Male"
+                students.append(
+                    self._create_student_user(
+                        User,
+                        username=f"demo_student_{student_index:03d}",
+                        email=f"demo_student_{student_index:03d}@example.com",
+                        first_name=fname,
+                        last_name=lname,
+                        gender=gender,
+                        address=f"Demo Address {student_index}",
+                        course=courses[course_name],
+                        session_year=session_year,
+                    )
+                )
+                student_index += 1
 
-        students = [
+        # Backward-compatible demo usernames used in previous test flows.
+        for legacy_id in range(1, 7):
             self._create_student_user(
                 User,
-                username="demo_student_1",
-                email="demo_student_1@example.com",
-                first_name="Sneha",
-                last_name="Patel",
-                gender="Female",
-                address="Green Park",
-                course=course_cs,
+                username=f"demo_student_{legacy_id}",
+                email=f"demo_student_{legacy_id}@example.com",
+                first_name=first_names[(legacy_id - 1) % len(first_names)],
+                last_name=last_names[(legacy_id - 1) % len(last_names)],
+                gender="Female" if legacy_id % 2 else "Male",
+                address=f"Legacy Demo Address {legacy_id}",
+                course=courses["BSc Computer Science"],
                 session_year=session_year,
-            ),
-            self._create_student_user(
-                User,
-                username="demo_student_2",
-                email="demo_student_2@example.com",
-                first_name="Arjun",
-                last_name="Nair",
-                gender="Male",
-                address="Lake Road",
-                course=course_cs,
-                session_year=session_year,
-            ),
-            self._create_student_user(
-                User,
-                username="demo_student_3",
-                email="demo_student_3@example.com",
-                first_name="Priya",
-                last_name="Das",
-                gender="Female",
-                address="MG Road",
-                course=course_cs,
-                session_year=session_year,
-            ),
-            self._create_student_user(
-                User,
-                username="demo_student_4",
-                email="demo_student_4@example.com",
-                first_name="Karan",
-                last_name="Joshi",
-                gender="Male",
-                address="River View",
-                course=course_bba,
-                session_year=session_year,
-            ),
-            self._create_student_user(
-                User,
-                username="demo_student_5",
-                email="demo_student_5@example.com",
-                first_name="Anaya",
-                last_name="Singh",
-                gender="Female",
-                address="Main Street",
-                course=course_bba,
-                session_year=session_year,
-            ),
-            self._create_student_user(
-                User,
-                username="demo_student_6",
-                email="demo_student_6@example.com",
-                first_name="Rohit",
-                last_name="Mehta",
-                gender="Male",
-                address="Hill Road",
-                course=course_bba,
-                session_year=session_year,
-            ),
-        ]
+            )
 
         self._seed_staff_activity(staff_users)
         self._seed_student_activity(students)
         self._seed_attendance_and_results(subjects, students, session_year)
 
         self.stdout.write(self.style.SUCCESS("Demo data created successfully."))
+        self.stdout.write(
+            f"Courses: {len(course_names)} | Staff: {len(staff_users)} | Subjects: {len(subjects)} | Students: {len(students)}"
+        )
         self.stdout.write("Demo password for all users: demo1234")
 
     def _create_staff_user(self, User, username, email, first_name, last_name, address):
@@ -318,38 +325,25 @@ class Command(BaseCommand):
 
     def _reset_demo_data(self, User):
         demo_users = User.objects.filter(username__startswith="demo_")
+        demo_subjects = Subjects.objects.filter(staff_id__in=demo_users)
+
+        FeedBackStudent.objects.filter(student_id__admin__in=demo_users).delete()
+        FeedBackStaffs.objects.filter(staff_id__admin__in=demo_users).delete()
+        LeaveReportStudent.objects.filter(student_id__admin__in=demo_users).delete()
+        LeaveReportStaff.objects.filter(staff_id__admin__in=demo_users).delete()
 
         AttendanceReport.objects.filter(student_id__admin__in=demo_users).delete()
-        AttendanceReport.objects.filter(attendance_id__subject_id__subject_name__in=[
-            "Data Structures",
-            "Database Systems",
-            "Business Management",
-            "Accounting",
-        ]).delete()
+        AttendanceReport.objects.filter(attendance_id__subject_id__in=demo_subjects).delete()
 
-        Attendance.objects.filter(subject_id__subject_name__in=[
-            "Data Structures",
-            "Database Systems",
-            "Business Management",
-            "Accounting",
-        ]).delete()
+        Attendance.objects.filter(subject_id__in=demo_subjects).delete()
 
         StudentResult.objects.filter(student_id__admin__in=demo_users).delete()
-        StudentResult.objects.filter(subject_id__subject_name__in=[
-            "Data Structures",
-            "Database Systems",
-            "Business Management",
-            "Accounting",
-        ]).delete()
+        StudentResult.objects.filter(subject_id__in=demo_subjects).delete()
 
         Students.objects.filter(admin__in=demo_users).delete()
         Staffs.objects.filter(admin__in=demo_users).delete()
+        AdminHOD.objects.filter(admin__in=demo_users).delete()
 
-        Subjects.objects.filter(subject_name__in=[
-            "Data Structures",
-            "Database Systems",
-            "Business Management",
-            "Accounting",
-        ]).delete()
+        demo_subjects.delete()
 
         demo_users.delete()

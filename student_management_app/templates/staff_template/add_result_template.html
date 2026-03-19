@@ -277,9 +277,6 @@
           {% for subject in subjects %}
             <option value="{{ subject.id }}">{{ subject.subject_name }}</option>
           {% endfor %}
-          <option value="101">Data Structures</option>
-          <option value="102">Database Management</option>
-          <option value="103">Operating Systems</option>
         </select>
       </div>
       <div class="field-wrap">
@@ -289,8 +286,6 @@
           {% for year in session_years %}
             <option value="{{ year.id }}">{{ year.session_start_year }} - {{ year.session_end_year }}</option>
           {% endfor %}
-          <option value="1">2023 – 2024</option>
-          <option value="2">2024 – 2025</option>
         </select>
       </div>
     </div>
@@ -318,9 +313,6 @@
           {% for subject in subjects %}
             <option value="{{ subject.id }}">{{ subject.subject_name }}</option>
           {% endfor %}
-          <option value="101">Data Structures</option>
-          <option value="102">Database Management</option>
-          <option value="103">Operating Systems</option>
         </select>
       </div>
     </div>
@@ -428,12 +420,6 @@
     return payload;
   }
 
-  const demoStudents = [
-    { id: 1, name: 'Arjun Sharma' }, { id: 2, name: 'Priya Nair' },
-    { id: 3, name: 'Rahul Verma' }, { id: 4, name: 'Sneha Das' },
-    { id: 5, name: 'Karan Mehta' }, { id: 6, name: 'Anjali Reddy' },
-  ];
-
   document.getElementById('fetch_students_for_result').addEventListener('click', function() {
     const subject = document.getElementById('subject_selector').value;
     const sessionYear = document.getElementById('session_year_selector').value;
@@ -453,7 +439,7 @@
     })
     .then(r => r.json())
     .then(data => {
-      const students = normalizeData(data).length ? normalizeData(data) : demoStudents;
+      const students = normalizeData(data);
       const list = document.getElementById('student_list');
       list.innerHTML = '<option value="">Select Student</option>';
       students.forEach(s => {
@@ -461,15 +447,14 @@
         o.value = s.id; o.textContent = s.name;
         list.appendChild(o);
       });
+      if (!students.length) {
+        alert('No students found for selected subject/session.');
+      }
     })
     .catch(() => {
       const list = document.getElementById('student_list');
       list.innerHTML = '<option value="">Select Student</option>';
-      demoStudents.forEach(s => {
-        const o = document.createElement('option');
-        o.value = s.id; o.textContent = s.name;
-        list.appendChild(o);
-      });
+      alert('Failed to fetch students. Please try again.');
     })
     .finally(() => { this.innerHTML = '<span>⚡</span> Fetch Students'; });
   });
