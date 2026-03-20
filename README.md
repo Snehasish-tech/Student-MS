@@ -466,5 +466,5 @@ This project is licensed under the **MIT License** - see [LICENSE](LICENSE) file
 <p align="center">
   Built with ❤️ by TEAM PLUTO
   <br>
-  <strong>Student Management System (SMS)</strong> © 2024
+  <strong>Student Management System (SMS)</strong> © 2026
 </p>
