@@ -1,12 +1,30 @@
 {
   "version": 2,
   "framework": "django",
+  "buildCommand": "pip install -r requirements.txt && python manage.py collectstatic --noinput",
+  "outputDirectory": "staticfiles",
   "env": {
-    "PYTHONUNBUFFERED": "1"
+    "PYTHONUNBUFFERED": "1",
+    "DEBUG": "False",
+    "DJANGO_SETTINGS_MODULE": "student_management_project.settings"
   },
   "functions": {
-    "student_management_project/wsgi.py": {
-      "runtime": "python3.10"
+    "api/index.py": {
+      "maxDuration": 30
     }
-  }
+  },
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "/static/$1",
+      "headers": {
+        "Cache-Control": "public, max-age=3600, immutable"
+      }
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/api/index.py",
+      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"]
+    }
+  ]
 }

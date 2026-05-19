@@ -39,10 +39,15 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-local-dev-key-change-me')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 
+# Detect if running on Vercel
+IS_VERCEL = bool(os.getenv('VERCEL') or os.getenv('VERCEL_ENV'))
+
+# Configure allowed hosts
 default_hosts = ['127.0.0.1', 'localhost', '.vercel.app', '.onrender.com']
 env_hosts = [host.strip() for host in os.getenv('ALLOWED_HOSTS', '').split(',') if host.strip()]
 ALLOWED_HOSTS = default_hosts + env_hosts
 
+# CSRF and session settings for production
 csrf_origins = [origin.strip() for origin in os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',') if origin.strip()]
 if csrf_origins:
     CSRF_TRUSTED_ORIGINS = csrf_origins
@@ -100,26 +105,28 @@ WSGI_APPLICATION = 'student_management_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-IS_VERCEL = bool(os.getenv('VERCEL') or os.getenv('VERCEL_ENV'))
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 if HAS_DJ_DATABASE_URL and DATABASE_URL:
+    # Use remote database (PostgreSQL on Vercel or similar)
     DATABASES = {
         'default': dj_database_url.config(
             default=DATABASE_URL,
             conn_max_age=600,
-            ssl_require=True,
+            ssl_require=not DEBUG,
         )
     }
 elif IS_VERCEL and not DATABASE_URL:
-    # During Vercel build, use SQLite as fallback (not used, just for build phase)
+    # Vercel build phase without database - not for production use
+    print("⚠️  WARNING: DATABASE_URL not set. Using in-memory SQLite for build phase only.")
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': ':memory:',  # Use in-memory database for build phase only
+            'NAME': ':memory:',
         }
     }
 else:
+    # Local development with SQLite
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -181,8 +188,18 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Vercel runs behind a proxy and HTTPS termination.
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SESSION_COOKIE_SECURE = not DEBUG
-CSRF_COOKIE_SECURE = not DEBUG
+
+# Security settings - stricter in production
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT = IS_VERCEL  # Redirect to HTTPS on Vercel
+    SECURE_HSTS_SECONDS = 31536000 if IS_VERCEL else 0  # 1 year on Vercel
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = IS_VERCEL
+    SECURE_HSTS_PRELOAD = IS_VERCEL
+else:
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
